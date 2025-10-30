@@ -1,4 +1,4 @@
-import { ItemCard } from "@/app/components/ItemCard/ItemCard";
+import { ItemCard } from "@/app/(pages)/(client)/components/ItemCard/ItemCard";
 import { Section3 } from "../../(home)/components/Section3/Section3";
 import { Filter } from "./components/Filter";
 import { SectionBreadcrumb } from "./components/SectionBreadcrumb";

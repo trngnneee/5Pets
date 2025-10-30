@@ -1,4 +1,4 @@
-import { ItemCard } from "@/app/components/ItemCard/ItemCard";
+import { ItemCard } from "@/app/(pages)/(client)/components/ItemCard/ItemCard";
 import { SectionHeader } from "./components/SectionHeader";
 
 export const Section2 = () => {
