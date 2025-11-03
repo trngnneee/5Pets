@@ -32,9 +32,9 @@ export const Header = () => {
     <>
       <div className="bg-[#FCEED5] py-7 relative">
         <div className="container mx-auto flex justify-between items-center relative z-10">
-          <div className="w-[115px] h-auto">
+          <div className="w-[180px] h-auto">
             <img
-              src="/logo.svg"
+              src="/logo.png"
               alt="5Pets Logo"
               className="w-full h-full"
             />
