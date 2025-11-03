@@ -35,9 +35,9 @@ export const BackgroundSider = () => {
       />
 
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-[60%]">
-        <div className="w-[280px] h-auto">
+        <div className="w-[400px] h-auto">
           <img
-            src="/logo.svg"
+            src="/logo.png"
             alt="Logo"
             className="w-full h-full object-contain"
           />
