@@ -37,7 +37,7 @@ export const ImageSlider = () => {
         <div className="overflow-hidden rounded-[10px]">
           <img
             src={imgSlide[currentIndex]}
-            className="w-full h-[476px] object-cover"
+            className="w-full h-[476px] object-cover rounded-[10px]"
           />
 
           <div className="text-muted-foreground py-2 text-center text-sm">

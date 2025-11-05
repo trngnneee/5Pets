@@ -14,6 +14,8 @@ import { usePathname } from "next/navigation"
 import React from "react"
 
 export const InfoBreadCrumb = () => {
+  const pathname = usePathname();
+  const pathSegments = pathname.split("/").filter(Boolean);
   return (
     <>
       <Breadcrumb>
