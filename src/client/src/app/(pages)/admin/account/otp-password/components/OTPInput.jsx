@@ -9,6 +9,8 @@ export const OTPInputComponent = ({ otp, setOtp }) => {
       name="otp-password"
       containerClassName="flex items-center gap-3 has-disabled:opacity-50"
       maxLength={6}
+      value={otp}
+      onChange={setOtp}
       render={({ slots }) => (
         <>
           <div className="flex">
