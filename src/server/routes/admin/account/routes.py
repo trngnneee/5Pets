@@ -10,7 +10,6 @@ from helper.FlaskMail import send_reset_otp
 from model.admin import Admin
 from model.forgot_password import ForgotPassword
 
-
 @account_bp.route('/register', methods=['POST'])
 def adminRegisterPost():
     data = request.get_json()
@@ -232,6 +231,25 @@ def adminResetPasswordPost():
     res = make_response(jsonify({
         "code": "success",
         "message": "Đổi mật khẩu thành công!"
+    }))
+
+    return res
+
+@account_bp.route('/list', methods=['GET'])
+def adminAccountListGet():
+    rawAdminList = Admin.objects().order_by('-created_at')
+    adminList = []
+    for admin in rawAdminList:
+        adminList.append({
+            "id": str(admin.id),
+            "fullname": admin.fullname,
+            "email": admin.email,
+        })
+
+    res = make_response(jsonify({
+        "code": "success",
+        "message": "Lấy danh sách tài khoản admin thành công!",
+        "data": adminList
     }))
 
     return res

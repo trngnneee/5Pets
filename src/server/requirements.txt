@@ -5,3 +5,4 @@ bcrypt
 flask-cors
 flask-jwt-extended
 Flask-Mail
+cloudinary

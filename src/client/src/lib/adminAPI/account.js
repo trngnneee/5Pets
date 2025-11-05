@@ -90,3 +90,16 @@ export const adminResetPassword = async (finalData) => {
 
   return data;
 }
+
+export const adminGetList = async () => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/account/list`, {
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy danh sách Admin thất bại");
+  }
+
+  return data;
+}

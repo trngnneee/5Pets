@@ -122,3 +122,8 @@
 .just-validate-error-label {
   font-size: 12px
 }
+
+@theme {
+  --main-color: #2B3674;
+  --main-hover: #1e2758be;
+}
