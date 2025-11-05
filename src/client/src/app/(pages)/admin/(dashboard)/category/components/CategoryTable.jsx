@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { buildFilterParams } from "@/helper/paramsHelper";
 
-export default function CategoryTable({ filter, itemsToDelete, setItemsToDelete }) {
+export default function CategoryTable({ filter, itemsToDelete, setItemsToDelete, setTotalPages }) {
   const [categoryList, setCategoryList] = useState([]);
   const searchParams = useSearchParams();
 
@@ -23,6 +23,7 @@ export default function CategoryTable({ filter, itemsToDelete, setItemsToDelete 
       const promise = await adminCategoryList(params);
       if (promise.code === "success") {
         setCategoryList(promise.data);
+        setTotalPages(Math.floor(promise.data?.length / 5) + 1);
       }
     };
     fetchData();
@@ -100,7 +101,7 @@ export default function CategoryTable({ filter, itemsToDelete, setItemsToDelete 
                   </div>
                 </td>
                 <td className="p-3 flex items-center justify-center gap-2">
-                  <AdminEditButton />
+                  <AdminEditButton link={`/admin/category/edit/${item.id}`} />
                   <AdminDeleteButton api={`${process.env.NEXT_PUBLIC_API_URL}/admin/category/delete/${item.id}`} />
                 </td>
               </tr>

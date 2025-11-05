@@ -8,6 +8,7 @@ import CategoryTable from "./components/CategoryTable";
 import { useRouter } from "next/navigation";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
+import CategoryPagination from "./components/CategoryPagination";
 
 export default function AdminCategory() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function AdminCategory() {
     date: { from: null, to: null },
     category: "",
     keyword: "",
+    page: 1
   });
 
   const handleFilterChange = (newFilter) => {
@@ -25,6 +27,9 @@ export default function AdminCategory() {
 
   // Xóa nhiều phần tử
   const [itemsToDelete, setItemsToDelete] = useState([]);
+
+  // Phân trang
+  const [totalPages, setTotalPages] = useState(1);
 
   return (
     <>
@@ -51,6 +56,13 @@ export default function AdminCategory() {
           filter={filter}
           itemsToDelete={itemsToDelete}
           setItemsToDelete={setItemsToDelete}
+          setTotalPages={setTotalPages}
+        />
+
+        <CategoryPagination
+          onFilterChange={handleFilterChange}
+          currentPage={filter.page}
+          totalPages={totalPages}
         />
       </div>
     </>

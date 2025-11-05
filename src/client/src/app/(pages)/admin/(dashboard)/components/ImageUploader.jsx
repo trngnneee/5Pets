@@ -29,6 +29,7 @@ export const ImageUploader = ({
     maxSize,
     multiple: true,
     maxFiles,
+    initialFiles: value
   })
 
   useEffect(() => {

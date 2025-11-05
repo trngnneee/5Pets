@@ -1,5 +1,4 @@
-from time import strftime
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import jsonify, make_response, request, g
 from . import category_bp
 from middleware.cloudinary import upload_to_cloudinary
@@ -33,9 +32,11 @@ def adminCreateCategoryPost():
 @category_bp.route('/list', methods=['GET'])
 def adminCategoryListGet():
     filter = {}
+    # CreatedBy filter
     if (request.args.get("createdBy")):
         filter["createdBy"] = request.args.get("createdBy")
     
+    # Date filter
     date_filter = {}
     if (request.args.get("dateFrom")):
         try:
@@ -53,10 +54,16 @@ def adminCategoryListGet():
         filter["createdAt__gte"] = date_filter.get("$gte")
         filter["createdAt__lte"] = date_filter.get("$lte")
 
+    # Search
     if (request.args.get("keyword")):
         filter["name__icontains"] = request.args.get("keyword")
 
-    rawCategoryList = Category.objects().order_by('-createdAt').filter(**filter)
+    # Pagination
+    page = int(request.args.get("page", 1))
+    limit = 5
+    offset = (page - 1) * limit
+    
+    rawCategoryList = Category.objects().order_by('-createdAt').filter(**filter)[offset:offset + limit]
     categoryList = []
     for category in rawCategoryList:
         createdInfo = Admin.objects(id=category.createdBy).only('fullname').first()
@@ -76,6 +83,25 @@ def adminCategoryListGet():
     res = make_response(jsonify({
         "code": "success",
         "message": "Lấy danh sách danh mục thành công",
+        "data": categoryList
+    }))
+    return res
+
+@category_bp.route('/list/all', methods=['GET'])
+def adminCategoryListAllGet():
+    rawCategoryList = Category.objects().order_by('-createdAt')
+    categoryList = []
+    for category in rawCategoryList:
+        categoryList.append({
+            "id": str(category.id),
+            "name": category.name,
+            "parent": category.parent,
+            "avatar": category.avatar,
+        })
+
+    res = make_response(jsonify({
+        "code": "success",
+        "message": "Lấy danh sách tất cả danh mục thành công",
         "data": categoryList
     }))
     return res
@@ -119,5 +145,56 @@ def adminCategoryMultiDeleteDelete():
     res = make_response(jsonify({
         "code": "success",
         "message": f"Đã xóa {deleted_count} danh mục thành công"
+    }))
+    return res
+
+@category_bp.route('/detail/<categoryId>', methods=['GET'])
+def adminCategoryDetailGet(categoryId):
+    category = Category.objects(id=categoryId).first()
+    if not category:
+        return make_response(jsonify({
+            "code": "error",
+            "message": "Danh mục không tồn tại"
+        }))
+
+    categoryData = {
+        "id": str(category.id),
+        "name": category.name,
+        "parent": category.parent,
+        "avatar": category.avatar,
+    }
+
+    res = make_response(jsonify({
+        "code": "success",
+        "message": "Lấy chi tiết danh mục thành công",
+        "data": categoryData
+    }))
+    return res
+
+@category_bp.route('/update/<categoryId>', methods=['POST'])
+@admin_required
+@upload_to_cloudinary
+def adminUpdateCategoryPost(categoryId):
+    category = Category.objects(id=categoryId).first()
+    if not category:
+        return make_response(jsonify({
+            "code": "error",
+            "message": "Danh mục không tồn tại"
+        }))
+
+    name = request.form.get("name")
+    parent = request.form.get("parent")
+    avatar = request.cloudinary_result.get("urls")[0] if request.cloudinary_result and request.cloudinary_result.get("urls") else category.avatar
+
+    category.name = name
+    category.parent = parent
+    category.avatar = avatar
+    category.updatedBy = str(g.current_admin.id)
+    category.updatedAt = datetime.now(timezone.utc)
+    category.save()
+
+    res = make_response(jsonify({
+        "code": "success",
+        "message": "Cập nhật danh mục thành công"
     }))
     return res

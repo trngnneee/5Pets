@@ -20,6 +20,10 @@ export function buildFilterParams(filter, searchParams) {
   if (filter?.keyword) {
     params.set("keyword", filter.keyword);
   }
+  
+  if (filter?.page) {
+    params.set("page", filter.page);
+  }
 
   return params;
 }
