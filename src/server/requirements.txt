@@ -1,0 +1,8 @@
+Flask
+mongoengine
+python-dotenv
+bcrypt
+flask-cors
+flask-jwt-extended
+Flask-Mail
+cloudinary

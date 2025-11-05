@@ -1,0 +1,29 @@
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react"
+
+export const useAdminAuth = () => {
+  const router = useRouter();
+  const pathName = usePathname();
+  const [isLogin, setIsLogin] = useState(false);
+  const [userInfo, setUserInfo] = useState();
+  
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/account/verify`, {
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.code == "error")
+        {
+          router.push("/admin/account/login");
+        }
+        if (data.code == "success")
+        {
+          setIsLogin(true);
+          setUserInfo(data.userInfo);
+        }
+      })
+  }, [pathName])
+
+  return { isLogin, userInfo };
+}
