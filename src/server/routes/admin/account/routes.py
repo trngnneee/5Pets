@@ -253,3 +253,14 @@ def adminAccountListGet():
     }))
 
     return res
+
+@account_bp.route('/logout', methods=['GET'])
+def adminLogoutGet():
+    res = make_response(jsonify({
+        "code": "success",
+        "message": "Đăng xuất thành công!"
+    }))
+
+    res.delete_cookie("adminToken")
+
+    return res

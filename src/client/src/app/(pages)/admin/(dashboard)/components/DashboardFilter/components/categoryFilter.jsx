@@ -5,9 +5,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { buildCategoryTree } from "@/helper/renderCategory";
 import { ChevronDownIcon } from "lucide-react";
 
-export const CategoryFilter = ({ category, setCategory, show = true }) => {
+export const CategoryFilter = ({ category, setCategory, show = true, categoryList }) => {
   if (!show) return null;
   
   return (
@@ -15,7 +16,7 @@ export const CategoryFilter = ({ category, setCategory, show = true }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="flex items-center gap-2 p-4 bg-white hover:bg-white text-[var(--main-color)] rounded-none shadow-none">
-            {"-- Danh mục --"}
+            {categoryList.find((item) => item.id == category)?.name || "-- Danh mục --"}
             <ChevronDownIcon
               className="-me-1 opacity-60"
               size={16}
@@ -25,10 +26,7 @@ export const CategoryFilter = ({ category, setCategory, show = true }) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent className="min-w-[--radix-dropdown-menu-trigger-width]">
-          <DropdownMenuItem>Option 1</DropdownMenuItem>
-          <DropdownMenuItem>Option 2</DropdownMenuItem>
-          <DropdownMenuItem>Option 3</DropdownMenuItem>
-          <DropdownMenuItem>Option 4</DropdownMenuItem>
+          {categoryList?.length > 0 && buildCategoryTree(categoryList, setCategory)}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -77,7 +77,7 @@ export const DashboardMultipleApply = ({ itemsToDelete, api }) => {
               <AlertDialogHeader>
                 <AlertDialogTitle>Bạn có chắc chắn muốn xóa không?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Hành động này không thể hoàn tác. Dữ liệu đã xóa sẽ không thể khôi phục.
+                  Hành động này không thể hoàn tác.
                 </AlertDialogDescription>
               </AlertDialogHeader>
             </div>
