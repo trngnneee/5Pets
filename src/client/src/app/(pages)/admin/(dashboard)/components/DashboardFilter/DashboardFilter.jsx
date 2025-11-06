@@ -7,6 +7,7 @@ import { DateFilter } from "./components/dateFilter";
 import { Button } from "@/components/ui/button";
 import { CategoryFilter } from "./components/categoryFilter";
 import { adminGetList } from "@/lib/adminAPI/account";
+import { adminCategoryAllList } from "@/lib/adminAPI/category";
 
 export const DashboardFilter = ({ showCreatedBy = true, showCategory = true, onFilterChange }) => {
   const [createdBy, setCreatedBy] = useState("");
@@ -17,11 +18,16 @@ export const DashboardFilter = ({ showCreatedBy = true, showCategory = true, onF
   const [category, setCategory] = useState("");
 
   const [adminList, setAdminList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       const promise = await adminGetList();
       if (promise.code == "success") {
         setAdminList(promise.data);
+      }
+      const promise2 = await adminCategoryAllList();
+      if (promise2.code == "success") {
+        setCategoryList(promise2.data);
       }
     }
     fetchData();
@@ -65,6 +71,7 @@ export const DashboardFilter = ({ showCreatedBy = true, showCategory = true, onF
         category={category}
         setCategory={setCategory}
         show={showCategory}
+        categoryList={categoryList}
       />
 
       <div className="flex flex-1 items-center gap-2 w-[200px] justify-center">

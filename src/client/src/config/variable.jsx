@@ -12,3 +12,14 @@ export const AdminDashboardVariable = [
     value: "user",
   }
 ]
+
+export const genderList = [
+  {
+    label: "Đực",
+    value: "male"
+  },
+  {
+    label: "Cái",
+    value: "female"
+  }
+]

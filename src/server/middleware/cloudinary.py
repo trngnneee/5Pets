@@ -5,7 +5,7 @@ from functools import wraps
 def upload_to_cloudinary(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        files = request.files.getlist('file')
+        files = request.files.getlist('images') or request.files.getlist('file')
         urls = []
 
         if not files or all(f.filename == "" for f in files):
