@@ -1,58 +1,30 @@
+"use client"
+
 import { ItemCard } from "@/app/(pages)/(client)/components/ItemCard/ItemCard";
 import { SectionHeader } from "./components/SectionHeader";
+import { useEffect, useState } from "react";
+import { clientPetList } from "@/lib/clientAPI/pet";
 
 export const Section2 = () => {
-  const itemList = [
-    {
-      image: "/dog1.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog2.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Cái",
-      age: "02 tháng",
-      price: "3.900.000"
-    },
-    {
-      image: "/dog3.jpg",
-      name: "MO102 - Poodle Tiny Sepia",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "4.000.000"
-    },
-    {
-      image: "/dog4.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog5.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog6.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-  ]
+  const [petList, setPetList] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await clientPetList('8');
+      console.log(promise);
+      if (promise.code == "success")
+      {
+        setPetList(promise.data);
+      }
+    }
+    fetchData();
+  }, [])
   
   return (
     <>
       <div className="container mx-auto my-[60px]">
         <SectionHeader />
         <div className="grid grid-cols-4 gap-7">
-          {itemList.map((item, index) => (
+          {petList.length > 0 && petList.map((item, index) => (
             <ItemCard
               key={index}
               item={item}
