@@ -115,6 +115,13 @@ def adminDeleteCategoryDelete(categoryId):
             "code": "error",
             "message": "Danh mục không tồn tại"
         }))
+    
+    child_exists = Category.objects(parent=categoryId).first()
+    if child_exists:
+        return make_response(jsonify({
+            "code": "error",
+            "message": "Không thể xóa danh mục vì vẫn còn danh mục con."
+        }))
 
     category.delete()
     res = make_response(jsonify({

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
 
-export const AdminDeleteButton = ({ api }) => {  
+export const AdminDeleteButton = ({ api }) => {
   const handleDelete = () => {
     const promise = fetch(api, {
       method: "DELETE",
@@ -25,7 +25,10 @@ export const AdminDeleteButton = ({ api }) => {
     toast.promise(promise, {
       loading: "Đang xóa...",
       success: (data) => {
-        window.location.reload();
+        if (data.code === "success") {
+          window.location.reload();
+          return data.message;
+        }
         return data.message;
       },
       error: (data) => {
