@@ -1,7 +1,7 @@
 from flask import jsonify, make_response
 from . import category_bp
 from model.category import Category
-from helper.buildCategoryTree import build_category_tree
+from helper.buildCategoryTree import buildCategoryTree
 
 @category_bp.route('/list', methods=['GET'])
 def get_categories():
@@ -14,8 +14,8 @@ def get_categories():
             "parent": category.parent,
             "avatar": category.avatar,
         })
-
-    categoryList = build_category_tree(categoryList)
+    
+    categoryList = buildCategoryTree(categoryList)
 
     res = make_response(jsonify({
         "code": "success",

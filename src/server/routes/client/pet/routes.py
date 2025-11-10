@@ -1,6 +1,8 @@
 from . import pet_bp
 from flask import make_response, jsonify, request
 from model.pet import Pet
+from model.category import Category
+from helper.getAllChildCategoryID import getAllChildCategoryID
 
 @pet_bp.route("/list", methods=["GET"])
 def list_pets():
@@ -29,5 +31,45 @@ def list_pets():
         "code": "success",
         "message": 'Lấy danh sách thú cưng thành công',
         "data": pet_list
+    }))
+    return res
+
+@pet_bp.route("/list/<category_id>", methods=["GET"])
+def pet_detail(category_id):
+    allChildId = getAllChildCategoryID(category_id)
+    allCategoryId = allChildId + [category_id]
+
+    rawPetList = Pet.objects(category__in=allCategoryId)
+
+    if not rawPetList:
+        res = make_response(jsonify({
+            "code": "error",
+            "message": "Không tìm thấy thú cưng"
+        }))
+        return res
+
+    petList = []
+    for pet in rawPetList:
+        petList.append({
+            "id": str(pet.id),
+            "name": pet.name,
+            "category": pet.category,
+            "age": pet.age,
+            "gender": pet.gender,
+            "price": pet.price,
+            "color": pet.color,
+            "description": pet.description,
+            "imageList": pet.imageList
+        })
+
+    categoryName = Category.objects(id=category_id).first().name if Category.objects(id=category_id).first() else "Không xác định"
+
+    res = make_response(jsonify({
+        "code": "success",
+        "message": "Lấy danh sách thú cưng thành công",
+        "data": {
+            "categoryName": categoryName,
+            "petList": petList
+        }
     }))
     return res

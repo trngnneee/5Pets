@@ -34,7 +34,7 @@ export const Header = () => {
             />
           </div>
           <div className="flex items-center gap-12">
-            <Link className="text-[16px] font-bold text-[#003459]" href="#">Trang chủ</Link>
+            <Link className="text-[16px] font-bold text-[#003459]" href="/">Trang chủ</Link>
             <NavigationMenu viewport={false} className="max-md:hidden">
               <NavigationMenuList className="gap-2">
                 {categoryList.map((item, index) => (

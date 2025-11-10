@@ -1,7 +1,7 @@
 from flask_mail import Message
 from __init__ import mail
 
-def send_reset_otp(email, otp):
+def SendResetOTP(email, otp):
     msg = Message(
         subject="Mã OTP khôi phục mật khẩu",
         recipients=[email],

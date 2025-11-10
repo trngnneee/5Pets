@@ -1,12 +1,12 @@
-def build_category_tree(categories):
-    category_dict = {str(category['id']): {**category, 'children': []} for category in categories}
-    root_categories = []
+def buildCategoryTree(categories):
+    categoryDict = {str(category['id']): {**category, 'children': []} for category in categories}
+    rootCategories = []
 
-    for category in category_dict.values():
-        parent_id = category['parent']
-        if parent_id and str(parent_id) in category_dict:
-            category_dict[str(parent_id)]['children'].append(category)
+    for category in categoryDict.values():
+        parentID = category['parent']
+        if parentID and str(parentID) in categoryDict:
+            categoryDict[str(parentID)]['children'].append(category)
         else:
-            root_categories.append(category)
+            rootCategories.append(category)
 
-    return root_categories
+    return rootCategories

@@ -1,5 +1,5 @@
 import json
-from helper.get_all_child_category_id import get_all_child_category_ids
+from helper.getAllChildCategoryID import getAllChildCategoryID
 from . import pet_bp
 from datetime import datetime, timezone
 from flask import make_response, jsonify, request, g
@@ -74,7 +74,7 @@ def getPetList():
     # Category Filter
     if request.args.get("category"):
         category_id = request.args.get("category")
-        category_ids = get_all_child_category_ids(category_id)
+        category_ids = getAllChildCategoryID(category_id)
         filter["category__in"] = category_ids
 
     # Pagination

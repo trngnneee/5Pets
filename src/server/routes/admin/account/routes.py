@@ -4,8 +4,8 @@ import bcrypt
 from flask_jwt_extended import create_access_token, decode_token
 from . import account_bp
 from middleware.adminAuth import admin_required
-from helper.OTPGen import generate_otp
-from helper.FlaskMail import send_reset_otp
+from helper.OTPGen import generateOTP
+from helper.FlaskMail import SendResetOTP
 
 from model.admin import Admin
 from model.forgot_password import ForgotPassword
@@ -154,9 +154,9 @@ def adminForgotPasswordPost():
             "message": "Vui lòng chờ 5 phút trước khi yêu cầu mã OTP mới"
         }))
 
-    otp = generate_otp(6)
+    otp = generateOTP(6)
 
-    send_reset_otp(email, otp)
+    SendResetOTP(email, otp)
 
     newRecord = ForgotPassword(
         email=email,

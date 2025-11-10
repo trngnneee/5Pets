@@ -10,12 +10,22 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { usePathname } from "next/navigation"
-import React from "react"
+import React, { useEffect, useState } from "react"
+import { categoryBreadcrumbs } from "@/lib/clientAPI/breadcrumb"
 
-export const SectionBreadcrumb = () => {
-  const pathName = usePathname();
-  const pathSegments = pathName.split("/").filter(segment => segment);
+export const SectionBreadcrumb = ({ id }) => {
+  const [breadcrumbs, setBreadcrumbs] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await categoryBreadcrumbs(id);
+      if (promise.code == "success")
+      {
+        setBreadcrumbs(promise.data);
+      }
+    }
+    fetchData();
+  }, [id])
 
   return (
     <div className="container mx-auto my-[9px]">
@@ -29,27 +39,14 @@ export const SectionBreadcrumb = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
 
-          {pathSegments.map((segment, index) => {
-            const isLast = index === pathSegments.length - 1;
-            const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
-            const displayName =
-              decodeURIComponent(segment)
-                .replace(/-/g, " ")
-                .replace(/\b\w/g, (c) => c.toUpperCase());
-
-            return (
-              <React.Fragment key={href}>
-                <BreadcrumbItem>
-                  {isLast ? (
-                    <BreadcrumbPage>{displayName}</BreadcrumbPage>
-                  ) : (
-                    <BreadcrumbLink href={href}>{displayName}</BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
-                {!isLast && <BreadcrumbSeparator />}
-              </React.Fragment>
-            );
-          })}
+          {breadcrumbs.length > 0 && breadcrumbs.map((item, index) => (
+            <React.Fragment key={item.id}>
+              <BreadcrumbItem>
+                <BreadcrumbLink href={`/category/${item.id}`}>{item.name}</BreadcrumbLink>
+              </BreadcrumbItem>
+              {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+            </React.Fragment>
+          ))}
         </BreadcrumbList>
       </Breadcrumb>
     </div>

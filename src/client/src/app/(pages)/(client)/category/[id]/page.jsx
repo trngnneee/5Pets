@@ -1,107 +1,43 @@
+"use client"
+
 import { ItemCard } from "@/app/(pages)/(client)/components/ItemCard/ItemCard";
 import { Section3 } from "../../(home)/components/Section3/Section3";
 import { Filter } from "./components/Filter";
 import { SectionBreadcrumb } from "./components/SectionBreadcrumb";
 import { SectionPagination } from "./components/SectionPagination";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { clientPetListByCategory } from "@/lib/clientAPI/pet";
 
 export default function CategoryPage() {
-  const itemList = [
-    {
-      image: "/dog1.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog2.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Cái",
-      age: "02 tháng",
-      price: "3.900.000"
-    },
-    {
-      image: "/dog3.jpg",
-      name: "MO102 - Poodle Tiny Sepia",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "4.000.000"
-    },
-    {
-      image: "/dog4.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog5.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog6.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog1.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog2.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Cái",
-      age: "02 tháng",
-      price: "3.900.000"
-    },
-    {
-      image: "/dog3.jpg",
-      name: "MO102 - Poodle Tiny Sepia",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "4.000.000"
-    },
-    {
-      image: "/dog4.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog5.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-    {
-      image: "/dog6.jpg",
-      name: "MO231 - Pomeranian White",
-      gender: "Đực",
-      age: "02 tháng",
-      price: "6.900.000"
-    },
-  ]
+  const [data, setData] = useState([]);
+  const [categoryName, setCategoryName] = useState("");
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await clientPetListByCategory(id);
+      if (promise.code == "success")
+      {
+        setData(promise.data.petList);
+        setCategoryName(promise.data.categoryName);
+      }
+    }
+    fetchData();
+  }, [])
 
   return (
     <>
-      <SectionBreadcrumb />
+      <SectionBreadcrumb
+        id={id}
+      />
       <Section3 />
       <div className="flex gap-5 container mx-auto mb-[60px] relative">
         <Filter />
         <div>
-          <div className="font-bold text-[24px] text-[#003459] mb-3.5">Chó Nhỏ</div>
+          <div className="font-bold text-[24px] text-[#003459] mb-3.5">{categoryName}</div>
           <div className="grid grid-cols-3 gap-5 mb-5">
-            {itemList.map((item, index) => (
+            {data.length > 0 && data.map((item, index) => (
               <ItemCard
                 key={index}
                 item={item}
