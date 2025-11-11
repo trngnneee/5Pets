@@ -117,3 +117,30 @@ export const adminLogout = async () => {
 
   return data;
 }
+
+export const adminAccountList = async () => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/account/initial-list`);
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy danh sách Admin thất bại");
+  }
+
+  return data;
+}
+
+export const adminAccountApprove = async (id) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/account/approve/${id}`, {
+    method: "GET",
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Phê duyệt tài khoản Admin thất bại");
+  }
+
+  return data;
+}

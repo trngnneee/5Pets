@@ -58,6 +58,11 @@ def adminLoginPost():
             "code": "error",  
             "message": "Mật khẩu không đúng"
         })
+    if existAdmin.status == "initial":
+        return jsonify({
+            "code": "error",  
+            "message": "Tài khoản của bạn đang chờ được duyệt. Vui lòng liên hệ quản trị viên."
+        })
     
     access_token = create_access_token(
         identity=str(existAdmin.id),
@@ -237,13 +242,18 @@ def adminResetPasswordPost():
 
 @account_bp.route('/list', methods=['GET'])
 def adminAccountListGet():
-    rawAdminList = Admin.objects().order_by('-created_at')
+    rawAdminList = Admin.objects(status="active")
     adminList = []
     for admin in rawAdminList:
+        approvedByInfo = Admin.objects(id=admin.approvedBy).first() if admin.approvedBy else None
+
         adminList.append({
             "id": str(admin.id),
             "fullname": admin.fullname,
             "email": admin.email,
+            "createdAt": admin.createdAt.isoformat(),
+            "updatedAt": admin.updatedAt.isoformat(),
+            "approvedBy": approvedByInfo.fullname if approvedByInfo else None
         })
 
     res = make_response(jsonify({
@@ -264,3 +274,43 @@ def adminLogoutGet():
     res.delete_cookie("adminToken")
 
     return res
+
+@account_bp.route('/initial-list', methods=['GET'])
+def list_users():
+  rawUserList = Admin.objects(status="initial")
+
+  userList = []
+  for user in rawUserList:
+    userList.append({
+      "id": str(user.id),
+      "name": user.fullname,
+      "email": user.email,
+    })
+  
+  res = make_response(jsonify({
+    "code": "success",
+    "message": "Lấy danh sách người dùng thành công",
+    "data": userList
+  }))
+  return res
+
+@account_bp.route('/approve/<user_id>', methods=['GET'])
+@admin_required
+def approve_user(user_id):
+  user = Admin.objects(id=user_id, status="initial").first()
+  if not user:
+    return make_response(jsonify({
+      "code": "error",
+      "message": "Người dùng không tồn tại hoặc đã được duyệt"
+    }))
+
+  user.status = "active"
+  user.approvedBy = str(g.current_admin.id)
+  user.updatedAt = datetime.datetime.now(datetime.timezone.utc)
+  user.save()
+
+  res = make_response(jsonify({
+    "code": "success",
+    "message": "Duyệt tài khoản người dùng thành công"
+  }))
+  return res

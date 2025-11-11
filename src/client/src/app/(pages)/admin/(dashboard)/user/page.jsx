@@ -1,7 +1,13 @@
+import { InitialUserTable } from "./components/InitialUserTable";
+import { UserTable } from "./components/UserTable";
+
 export default function AdminUser(){
   return (
     <>
-      <div>Trang quản lý người dùng</div>
+      <div>
+        <InitialUserTable />
+        <UserTable />
+      </div>
     </>
   )
 }

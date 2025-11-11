@@ -9,6 +9,7 @@ export function middleware(req) {
     "/admin/account/register",
     "/admin/account/forgot-password",
     "/admin/account/otp-password",
+    "/admin/account/initial",
   ];
 
   if (token && publicPaths.some(path => pathname.startsWith(path))) {

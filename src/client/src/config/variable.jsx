@@ -8,7 +8,7 @@ export const AdminDashboardVariable = [
     value: "pet",
   },
   {
-    label: "Quản lí người dùng",
+    label: "Quản lí admin",
     value: "user",
   }
 ]

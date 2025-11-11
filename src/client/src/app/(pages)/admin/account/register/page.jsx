@@ -87,7 +87,7 @@ export default function AdminRegisterPage() {
         };
 
         const promise = adminRegister(finalData);
-        toastHandler(promise, router, '/admin/account/login');
+        toastHandler(promise, router, '/admin/account/initial');
       })
   }, [])
 
