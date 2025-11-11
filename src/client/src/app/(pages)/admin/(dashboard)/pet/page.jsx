@@ -5,7 +5,7 @@ import { DashboardFilter } from "../components/DashboardFilter/DashboardFilter";
 import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { Import, PlusIcon } from "lucide-react";
 import PetTable from "./components/PetTable";
 import { useRouter } from "next/navigation";
 import PetPagination from "./components/PetPagination";
@@ -47,6 +47,10 @@ export default function AdminPet() {
           <Button onClick={() => router.push("/admin/pet/create")} variant="outline" className="aspect-square max-sm:p-0 bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white">
             <PlusIcon className="opacity-60 sm:-ms-1" size={16} aria-hidden="true" />
             <span className="max-sm:sr-only">Tạo mới</span>
+          </Button>
+          <Button onClick={() => router.push("/admin/pet/import")} variant="outline" className="aspect-square max-sm:p-0 bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white">
+            <Import className="opacity-60 sm:-ms-1" size={16} aria-hidden="true" />
+            <span className="max-sm:sr-only">Import file JSON/CSV</span>
           </Button>
         </div>
 
