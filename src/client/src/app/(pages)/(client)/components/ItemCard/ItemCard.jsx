@@ -4,7 +4,7 @@ import Link from "next/link";
 export const ItemCard = ({ item }) => {
   return (
     <>
-      <Link href={`detail/${item.id}`} className="p-2 shadow-xl rounded-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+      <Link href={`/detail/${item.id}`} className="p-2 shadow-xl rounded-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer">
         <div className="overflow-hidden mb-4 w-full h-[250px]">
           <img
             src={item.imageList[0]}
