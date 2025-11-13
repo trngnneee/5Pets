@@ -1,5 +1,6 @@
 import json
 from helper.getAllChildCategoryID import getAllChildCategoryID
+import cloudinary.uploader
 from . import pet_bp
 from datetime import datetime, timezone
 from flask import make_response, jsonify, request, g
@@ -78,8 +79,11 @@ def getPetList():
         filter["category__in"] = category_ids
 
     # Pagination
-    page = int(request.args.get("page", 1))
+    totalItem = Pet.objects.filter(**filter).count()
     limit = 5
+    totalPages = (totalItem + limit - 1) // limit
+
+    page = int(request.args.get("page", 1))
     offset = (page - 1) * limit
 
     rawPetList = Pet.objects().order_by('-createdAt').filter(**filter)[offset:offset + limit]
@@ -108,7 +112,8 @@ def getPetList():
     res = make_response(jsonify({
         "code": "success",
         "message": "Lấy danh sách pet thành công",
-        "data": pet_list
+        "data": pet_list,
+        "totalPages": totalPages
     }))
     return res
 
@@ -240,4 +245,68 @@ def adminEditPetPost(petID):
     return jsonify({
         "code": "success",
         "message": "Cập nhật pet thành công"
+    })
+
+@pet_bp.route('/import', methods=['POST'])
+@admin_required
+def importPets():
+    if 'file' not in request.files:
+        return jsonify({
+            "code": "error",
+            "message": "Không có file trong request"
+        }), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({
+            "code": "error",
+            "message": "Chưa chọn file nào"
+        }), 400
+
+    try:
+        data = json.load(file)  
+    except Exception as e:
+        return jsonify({
+            "code": "error",
+            "message": f"Lỗi đọc file JSON: {e}"
+        }), 400
+
+    pets = []
+    for name, info in data.items():
+        pet = {
+            "name": name,
+            "age": info.get("more_information", {}).get("Tháng tuổi", 0),
+            "gender": info.get("more_information", {}).get("Giới tính", "Khác"),
+            "price": info.get("price", 0),
+            "color": info.get("more_information", {}).get("Màu", "Không xác định"),
+            "description": info.get("description", "")[0] if info.get("description") else "",
+            "category": info.get("category"),
+            "imageList": [],
+            "createdBy": str(g.current_admin.id),
+            "updatedBy": str(g.current_admin.id),
+            "createdAt": datetime.now(timezone.utc),
+            "updatedAt": datetime.now(timezone.utc)
+        }
+
+        for img_url in info.get("link_image_file", []):
+            try:
+                upload_result = cloudinary.uploader.upload(
+                    img_url,
+                    use_filename=True,
+                    unique_filename=False,
+                    overwrite=True
+                )
+                pet["imageList"].append(upload_result["secure_url"])
+            except Exception as e:
+                print(f"Upload lỗi {img_url}: {e}")
+
+        pets.append(pet)
+
+    if pets:
+        Pet.objects.insert([Pet(**pet) for pet in pets])
+
+    return jsonify({
+        "code": "success",
+        "message": f"Import {len(pets)} thú cưng thành công",
     })

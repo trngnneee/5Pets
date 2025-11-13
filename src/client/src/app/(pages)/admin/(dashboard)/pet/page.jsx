@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardFilter } from "../components/DashboardFilter/DashboardFilter";
 import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
@@ -9,6 +9,7 @@ import { Import, PlusIcon } from "lucide-react";
 import PetTable from "./components/PetTable";
 import { useRouter } from "next/navigation";
 import PetPagination from "./components/PetPagination";
+import { adminPetTotalPage } from "@/lib/adminAPI/pet";
 
 export default function AdminPet() {
   const router = useRouter();

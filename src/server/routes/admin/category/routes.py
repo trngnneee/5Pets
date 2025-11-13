@@ -59,8 +59,11 @@ def adminCategoryListGet():
         filter["name__icontains"] = request.args.get("keyword")
 
     # Pagination
-    page = int(request.args.get("page", 1))
+    totalItem = Category.objects.filter(**filter).count()
     limit = 5
+    totalPages = (totalItem + limit - 1) // limit
+
+    page = int(request.args.get("page", 1))
     offset = (page - 1) * limit
     
     rawCategoryList = Category.objects().order_by('-createdAt').filter(**filter)[offset:offset + limit]
@@ -83,7 +86,8 @@ def adminCategoryListGet():
     res = make_response(jsonify({
         "code": "success",
         "message": "Lấy danh sách danh mục thành công",
-        "data": categoryList
+        "data": categoryList,
+        "totalPages": totalPages
     }))
     return res
 

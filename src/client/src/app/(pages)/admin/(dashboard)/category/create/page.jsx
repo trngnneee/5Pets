@@ -47,11 +47,6 @@ export default function AdminCategoryCreate() {
           errorMessage: 'Tên danh mục bắt buộc!'
         },
         {
-          rule: 'minLength',
-          value: 5,
-          errorMessage: 'Tên danh mục phải có ít nhất 5 ký tự!',
-        },
-        {
           rule: 'maxLength',
           value: 50,
           errorMessage: 'Tên danh mục không được vượt quá 50 ký tự!',

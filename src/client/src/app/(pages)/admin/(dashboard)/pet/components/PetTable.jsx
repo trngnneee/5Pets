@@ -23,7 +23,7 @@ export default function PetTable({ filter, itemsToDelete, setItemsToDelete, setT
       const promise = await adminPetList(params);
       if (promise.code === "success") {
         setPetList(promise.data);
-        setTotalPages(Math.floor(promise.data?.length / 5) + 1);
+        setTotalPages(promise.totalPages);
       }
     };
     fetchData();
@@ -91,7 +91,7 @@ export default function PetTable({ filter, itemsToDelete, setItemsToDelete, setT
                     className="w-13 h-13 object-cover rounded-md"
                   />
                 </td>
-                <td className="p-3">{item.age} Tháng</td>
+                <td className="p-3">{item.age}</td>
                 <td className="p-3">{item.gender == "male" ? "Đực" : "Cái"}</td>
                 <td className="p-3">{item.price}</td>
                 <td className="p-3">

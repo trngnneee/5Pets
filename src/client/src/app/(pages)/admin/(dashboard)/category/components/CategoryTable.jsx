@@ -23,7 +23,7 @@ export default function CategoryTable({ filter, itemsToDelete, setItemsToDelete,
       const promise = await adminCategoryList(params);
       if (promise.code === "success") {
         setCategoryList(promise.data);
-        setTotalPages(Math.floor(promise.data?.length / 5) + 1);
+        setTotalPages(promise.totalPages);
       }
     };
     fetchData();
