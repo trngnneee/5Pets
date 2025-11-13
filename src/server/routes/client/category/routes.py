@@ -20,6 +20,6 @@ def get_categories():
     res = make_response(jsonify({
         "code": "success",
         "message": "Lấy danh sách tất cả danh mục thành công",
-        "data": categoryList
+        "data": categoryList,
     }))
     return res

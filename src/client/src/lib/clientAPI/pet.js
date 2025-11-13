@@ -12,8 +12,8 @@ export const clientPetList = async (limit = "") => {
   return data;
 }
 
-export const clientPetListByCategory = async (category) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pet/list/${category}`, {
+export const clientPetListByCategory = async (category, params = "") => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pet/list/${category}?${params}`, {
     method: "GET",
   });
 

@@ -16,7 +16,7 @@ export const ItemCard = ({ item }) => {
           <div className="text-[12px] text-[#667479] font-mediun flex items-center mb-1">
             <div>Giống: <span className="font-bold">{item.gender == "male" ? "Đực" : "Cái"}</span></div>
             <div><Dot /></div>
-            <div>Tuổi: <span className="font-bold">{item.age} Tháng</span></div>
+            <div>Tuổi: <span className="font-bold">{item.age}</span></div>
           </div>
           <div className="text-sm font-bold mb-5">{item.price.toLocaleString("vi-VN")} VND</div>
         </div>
