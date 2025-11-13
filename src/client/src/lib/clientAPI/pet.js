@@ -25,3 +25,18 @@ export const clientPetListByCategory = async (category, params = "") => {
 
   return data;
 }
+
+export const clientPetDetail = async (id) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pet/detail/${id}`, {
+    method: "GET",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy chi tiết thú cưng thất bại");
+  }
+
+  return data;
+}
+

@@ -9,19 +9,9 @@ import {
 } from "@/components/ui/carousel"
 import { useEffect, useState } from "react"
 
-export const ImageSlider = () => {
+export const ImageSlider = ({ dogDetail }) => {
   const [api, setApi] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const imgSlide = [
-    "/detail1.jpg",
-    "/detail2.jpg",
-    "/detail3.jpg",
-    "/detail4.jpg",
-    "/detail5.jpg",
-    "/detail1.jpg",
-    "/detail2.jpg",
-  ]
 
   useEffect(() => {
     if (!api) return;
@@ -29,18 +19,18 @@ export const ImageSlider = () => {
     api.on("select", () => {
       setCurrentIndex(api.selectedScrollSnap());
     });
-  }, [api])
+  }, [api, dogDetail])
 
   return (
     <>
       <div className="w-1/2">
         <div className="overflow-hidden rounded-[10px]">
           <img
-            src={imgSlide[currentIndex]}
+            src={dogDetail && dogDetail.imageList[currentIndex]}
             className="w-full h-[476px] object-cover rounded-[10px]"
           />
           <div className="text-muted-foreground py-2 text-center text-sm">
-            Image {currentIndex + 1} of {imgSlide.length}
+            Ảnh {currentIndex + 1} của {dogDetail && dogDetail.imageList.length || 0}
           </div>
         </div>
         <Carousel
@@ -52,11 +42,14 @@ export const ImageSlider = () => {
           setApi={setApi}
         >
           <CarouselContent className="-ml-2">
-            {imgSlide.map((item, index) => (
+            {dogDetail && dogDetail.imageList.map((item, index) => (
               <CarouselItem
                 key={index}
-                className="pl-2 basis-1/5"
+                className="pl-2"
                 onClick={() => api?.scrollTo(index)}
+                style={{
+                  flexBasis: `${100 / Math.min(dogDetail.imageList.length - 1, 5)}%`,
+                }}
               >
                 <div className="w-full overflow-hidden rounded-[10px]">
                   <img

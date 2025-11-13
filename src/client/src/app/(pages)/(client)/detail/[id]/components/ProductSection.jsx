@@ -1,38 +1,46 @@
 "use client"
 import { useEffect, useState } from "react";
 import { ItemCard } from "../../../components/ItemCard/ItemCard";
+import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
+import { clientPetList } from "@/lib/clientAPI/pet";
+import { ItemCardSkeleton } from "../../../components/ItemCard/ItemCardSkeleton";
 
 export const OtherProducts = () => {
-  const itemList = [
-    { imageList: ["/dog1.jpg"], name: "MO231 - Pomeranian White", gender: "Đực", age: "02 tháng", price: "6.900.000" },
-    { imageList: ["/dog2.jpg"], name: "MO231 - Pomeranian White", gender: "Cái", age: "02 tháng", price: "3.900.000" },
-    { imageList: ["/dog3.jpg"], name: "MO102 - Poodle Tiny Sepia", gender: "Đực", age: "02 tháng", price: "4.000.000" },
-    { imageList: ["/dog4.jpg"], name: "MO231 - Pomeranian White", gender: "Đực", age: "02 tháng", price: "6.900.000" },
-    { imageList: ["/dog5.jpg"], name: "MO231 - Pomeranian White", gender: "Đực", age: "02 tháng", price: "6.900.000" },
-    { imageList: ["/dog6.jpg"], name: "MO231 - Pomeranian White", gender: "Đực", age: "02 tháng", price: "6.900.000" },
-  ];
-
-  const [randomItems, setRandomItems] = useState([]);
-
+  const [itemList, setItemList] = useState([]);
   useEffect(() => {
-    const shuffled = [...itemList].sort(() => 0.5 - Math.random());
-    setRandomItems(shuffled.slice(0, 4));
-  }, []);
+    const fetchData = async () => {
+      const promise = await clientPetList(4);
+      if (promise.code == "success")
+      {
+        setItemList(promise.data);
+      }
+    }
+    fetchData();
+  }, [])
 
-  if (randomItems.length === 0) return null;
   return (
     <div className="w-full">
-      <div className="font-beVietnam gap-[2px]">
-        <p className="font-beVietnam font-bold text-[16px] opacity-100 leading-[24px]">
-          Có gì mới ?
-        </p>
-        <p className="font-beVietnam font-bold text-[24px] opacity-100 leading-[36px] text-[#003459]">
-          Xem thêm chó con
-        </p>
+      <div className="flex justify-between items-center my-7">
+        <div>
+          <div className="font-medium">Có gì mới?</div>
+          <div className="text-[24px] font-bold text-[#003459] capitalize">Xem thêm thú cưng</div>
+        </div>
+
+        <div>
+          <Button
+            className="bg-transparent text-[#002A48] hover:bg-[#80808023] border-[1.5px] border-[#003459] rounded-[57px] py-3 px-7"
+          >
+            Xem thêm
+            <ChevronRight />
+          </Button>
+        </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-5">
-        {randomItems.map((item, index) => (
+        {itemList.length > 0 ? itemList.map((item, index) => (
           <ItemCard key={index} item={item} />
+        )) : [...Array(4)].map((_, index) => (
+          <ItemCardSkeleton key={index} />
         ))}
       </div>
     </div>

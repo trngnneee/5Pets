@@ -100,3 +100,31 @@ def pet_detail(category_id):
         } 
     })) 
     return res
+
+@pet_bp.route("/detail/<pet_id>", methods=["GET"])
+def pet_info(pet_id):
+    pet = Pet.objects(id=pet_id).first()
+    if not pet:
+        res = make_response(jsonify({
+            "code": "error",
+            "message": "Không tìm thấy thú cưng"
+        }))
+        return res
+
+    pet_data = {
+        "id": str(pet.id),
+        "name": pet.name,
+        "category": pet.category,
+        "age": pet.age,
+        "gender": pet.gender,
+        "price": pet.price,
+        "color": pet.color,
+        "description": pet.description,
+        "imageList": pet.imageList
+    }
+    res = make_response(jsonify({
+        "code": "success",
+        "message": "Lấy thông tin thú cưng thành công",
+        "data": pet_data
+    }))
+    return res

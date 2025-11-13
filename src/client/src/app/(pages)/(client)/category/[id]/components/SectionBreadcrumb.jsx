@@ -39,14 +39,21 @@ export const SectionBreadcrumb = ({ id }) => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
 
-          {breadcrumbs.length > 0 && breadcrumbs.map((item, index) => (
-            <React.Fragment key={item.id}>
-              <BreadcrumbItem>
-                <BreadcrumbLink href={`/category/${item.id}`}>{item.name}</BreadcrumbLink>
-              </BreadcrumbItem>
-              {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-            </React.Fragment>
-          ))}
+          {breadcrumbs.length > 0 && breadcrumbs.map((item, index) => {
+            const isLast = index === breadcrumbs.length - 1;
+            return (
+              <React.Fragment key={index}>
+                <BreadcrumbItem>
+                  {isLast ? (
+                    <BreadcrumbPage>{item.name}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink href={`/category/${item.id}`}>{item.name}</BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+                {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+              </React.Fragment>
+            );
+          })}
         </BreadcrumbList>
       </Breadcrumb>
     </div>

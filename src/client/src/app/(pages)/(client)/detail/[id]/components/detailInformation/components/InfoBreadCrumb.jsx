@@ -11,11 +11,25 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { usePathname } from "next/navigation"
-import React from "react"
+import React, { useEffect, useState } from "react"
+import { petBreadcrumbs } from "@/lib/clientAPI/breadcrumb"
+import { set } from "date-fns"
 
 export const InfoBreadCrumb = () => {
   const pathname = usePathname();
-  const pathSegments = pathname.split("/").filter(Boolean);
+  const id = pathname.split("/").slice(-1);
+  const [pathName, setPathName] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await petBreadcrumbs(id);
+      if (promise.code == "success") {
+        setPathName(promise.data);
+      }
+    }
+    fetchData();
+  }, [])
+
   return (
     <>
       <Breadcrumb>
@@ -28,24 +42,18 @@ export const InfoBreadCrumb = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
 
-          {pathSegments.map((segment, index) => {
-            const isLast = index === pathSegments.length - 1;
-            const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
-            const displayName =
-              decodeURIComponent(segment)
-                .replace(/-/g, " ")
-                .replace(/\b\w/g, (c) => c.toUpperCase());
-
+          {pathName && pathName.map((item, index) => {
+            const isLast = index === pathName.length - 1;
             return (
-              <React.Fragment key={href}>
+              <React.Fragment key={index}>
                 <BreadcrumbItem>
                   {isLast ? (
-                    <BreadcrumbPage>{displayName}</BreadcrumbPage>
+                    <BreadcrumbPage>{item.name}</BreadcrumbPage>
                   ) : (
-                    <BreadcrumbLink href={href}>{displayName}</BreadcrumbLink>
+                    <BreadcrumbLink href={`/category/${item.id}`}>{item.name}</BreadcrumbLink>
                   )}
                 </BreadcrumbItem>
-                {!isLast && <BreadcrumbSeparator />}
+                {index < pathName.length - 1 && <BreadcrumbSeparator />}
               </React.Fragment>
             );
           })}
