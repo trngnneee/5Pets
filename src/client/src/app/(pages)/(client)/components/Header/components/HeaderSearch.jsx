@@ -1,17 +1,29 @@
-import { ArrowRightIcon, SearchIcon } from "lucide-react"
+"use client"
 
+import { ArrowRightIcon, SearchIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const HeaderSearch = () => {
+  const [keyWord, setKeyword] = useState("");
+  const router = useRouter();
+  
+  const handleSearch = () => {
+    router.push(`/search?keyword=${encodeURIComponent(keyWord)}`);
+  }
+
   return (
     <>
       <div className="*:not-first:mt-2">
-        <div className="relative">
+        <form className="relative" onSubmit={(e) => { e.preventDefault(); handleSearch(); }}>
           <Input
             id="search"
             className="peer ps-9 pe-9 rounded-[46px] bg-white"
             placeholder="Nhập từ khóa..."
             type="search"
+            value={keyWord}
+            onChange={(e) => setKeyword(e.target.value)}
           />
           <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
             <SearchIcon size={16} />
@@ -23,7 +35,7 @@ export const HeaderSearch = () => {
           >
             <ArrowRightIcon size={16} aria-hidden="true" />
           </button>
-        </div>
+        </form>
       </div>
     </>
   );

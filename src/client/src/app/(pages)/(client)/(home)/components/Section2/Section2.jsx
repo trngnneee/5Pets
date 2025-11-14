@@ -23,7 +23,7 @@ export const Section2 = () => {
     <>
       <div className="container mx-auto my-[60px]">
         <SectionHeader />
-        <div className="grid grid-cols-4 gap-7">
+        <div className="grid grid-cols-4 gap-7" data-aos="fade-up">
           {petList.length > 0 && petList.map((item, index) => (
             <ItemCard
               key={index}

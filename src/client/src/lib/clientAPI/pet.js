@@ -40,3 +40,16 @@ export const clientPetDetail = async (id) => {
   return data;
 }
 
+export const clientPetSearch = async (keyword) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pet/search?keyword=${encodeURIComponent(keyword)}`, {
+    method: "GET"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Tìm kiếm thú cưng thất bại");
+  }
+
+  return data;
+}

@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import { clientCategoryList } from "@/lib/clientAPI/category";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export const Header = () => {
+  const router = useRouter();
   const [categoryList, setCategoryList] = useState([]);
 
   useEffect(() => {
@@ -79,7 +81,7 @@ export const Header = () => {
           </div>
           <div className="flex items-center gap-3.5">
             <HeaderSearch />
-            <Button className="bg-[#003459] hover:bg-[#001e33] rounded-[57px] font-bold">Tham gia cộng đồng</Button>
+            <Button onClick={() => router.push("/admin/account/login")} className="bg-[#003459] hover:bg-[#001e33] rounded-[57px] font-bold">Admin Dashboard</Button>
           </div>
         </div>
         <div className="absolute top-0 left-0 z-0 h-4/5 w-auto overflow-hidden">

@@ -1,5 +1,6 @@
 import { Toaster } from "sonner";
 import "./../globals.css";
+import { AOSConfig } from "@/config/AOS";
 
 export const metadata = {
   title: "5Pets",
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Toaster />
+        <AOSConfig />
         {children}
       </body>
     </html>

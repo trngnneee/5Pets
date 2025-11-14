@@ -128,3 +128,42 @@ def pet_info(pet_id):
         "data": pet_data
     }))
     return res
+
+@pet_bp.route("/search", methods=["GET"])
+def search_pets():  
+    keyword = request.args.get("keyword", "")
+    if not keyword:
+        res = make_response(jsonify({
+            "code": "error",
+            "message": "Vui lòng cung cấp từ khóa tìm kiếm"
+        }))
+        return res
+    
+    regex = f".*{keyword}.*"
+    raw_pets = Pet.objects(slug__iregex=regex).order_by('-createdAt')
+    pet_list = []
+    for pet in raw_pets:
+        pet_list.append({
+            "id": str(pet.id),
+            "name": pet.name,
+            "category": pet.category,
+            "age": pet.age,
+            "gender": pet.gender,
+            "price": pet.price,
+            "color": pet.color,
+            "description": pet.description,
+            "imageList": pet.imageList
+        })
+
+    if not pet_list:
+        res = make_response(jsonify({
+            "code": "error",
+            "message": "Không tìm thấy thú cưng phù hợp"
+        }))
+        return res
+    res = make_response(jsonify({
+        "code": "success",
+        "message": "Tìm kiếm thú cưng thành công",
+        "data": pet_list
+    }))
+    return res

@@ -70,7 +70,7 @@ def getPetList():
 
     # Search
     if (request.args.get("keyword")):
-        filter["name__icontains"] = request.args.get("keyword")
+        filter["slug__icontains"] = request.args.get("keyword")
 
     # Category Filter
     if request.args.get("category"):

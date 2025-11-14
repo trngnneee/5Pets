@@ -24,7 +24,7 @@ export const Section4 = () => {
   ]
   
   return (
-    <div className="container mx-auto mb-[60px]">
+    <div className="container mx-auto mb-[60px]" data-aos-delay="300" data-aos="fade-up">
       <SectionHeader/>
       <div className="grid grid-cols-3 gap-7">
         {data.map((item, index) => (
