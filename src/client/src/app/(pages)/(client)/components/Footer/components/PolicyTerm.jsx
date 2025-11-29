@@ -7,7 +7,7 @@ export const PolicyTerm = () => {
         </div>
         <div className="w-[115px] h-auto">
           <img
-            src="/logo.svg"
+            src="/logo.png"
             className="w-full h-full"
           />
         </div>

@@ -7,11 +7,28 @@ from helper.getAllChildCategoryID import getAllChildCategoryID
 @pet_bp.route("/list", methods=["GET"])
 def list_pets():
     limit = None
+    gender = None
 
     if (request.args.get("limit")):
         limit = int(request.args.get("limit"))
 
-    raw_pets = Pet.objects.limit(limit).order_by('-createdAt') if limit else Pet.objects().order_by('-createdAt')
+    if (request.args.get("gender")):
+        gender = request.args.get("gender")
+
+    random = request.args.get("random", "false").lower() == "true"
+    if random:
+        import random as rand
+        total_pets = Pet.objects.count()
+        if limit and total_pets > limit:
+            random_indices = rand.sample(range(total_pets), limit)
+            raw_pets = [Pet.objects.skip(i).first() for i in random_indices]
+        else:
+            raw_pets = list(Pet.objects)
+    else:
+        raw_pets = Pet.objects.limit(limit).order_by('-createdAt') if limit else Pet.objects().order_by('-createdAt')
+
+    if gender:
+        raw_pets = raw_pets.filter(gender=gender)
     pet_list = []
 
     for pet in raw_pets:
@@ -51,11 +68,7 @@ def pet_detail(category_id):
     if gender_list:
         query = query.filter(gender__in=gender_list)
     if color_list:
-        regex_filters = []
-        for color in color_list:
-            regex_filters.append({"color": {"$regex": color, "$options": "i"}})
-
-        query = query.filter(__raw__={"$or": regex_filters})
+        query = query.filter(color_slug__in=color_list)
 
     itemsPerPage = 9
     totalItem = query.count()

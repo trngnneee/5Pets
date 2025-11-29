@@ -1,5 +1,5 @@
-export const clientPetList = async (limit = "") => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pet/list` + (limit ? `?limit=${limit}` : ""), {
+export const clientPetList = async (limit = "", random = false) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pet/list` + (limit ? `?limit=${limit}` : "") + (random ? "&random=true" : ""), {
     method: "GET",
   });
 

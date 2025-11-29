@@ -1,8 +1,24 @@
+"use client"
+
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { clientColorList } from "@/lib/clientAPI/category"
 import { Funnel } from "lucide-react"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export const Filter = ({ gender, setGender, color, setColor }) => {
+  const [colorList, setColorList] = useState([]);
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await clientColorList(id);
+      setColorList(promise.data);
+    }
+    fetchData();
+  }, [])
+
   return (
     <>
       <div className="w-[280px] sticky top-[100px] h-fit self-start">
@@ -15,29 +31,29 @@ export const Filter = ({ gender, setGender, color, setColor }) => {
           <div className="font-bold text-[#00171F] mb-2.5">Giống</div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <Checkbox 
-                id="gender_male" 
-                checked={gender.includes("male")} 
+              <Checkbox
+                id="gender_male"
+                checked={gender.includes("male")}
                 onCheckedChange={(checked) => {
-                if (checked) {
-                  setGender([...gender, "male"]);
-                } else {
-                  setGender(gender.filter(g => g !== "male"));
-                }
-              }} />
+                  if (checked) {
+                    setGender([...gender, "male"]);
+                  } else {
+                    setGender(gender.filter(g => g !== "male"));
+                  }
+                }} />
               <Label htmlFor="gender_male" className="font-medium text-sm text-[#00171F]">Đực</Label>
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox 
-                id="gender_female" 
-                checked={gender.includes("female")} 
+              <Checkbox
+                id="gender_female"
+                checked={gender.includes("female")}
                 onCheckedChange={(checked) => {
-                if (checked) {
-                  setGender([...gender, "female"]);
-                } else {
-                  setGender(gender.filter(g => g !== "female"));
-                }
-              }} />
+                  if (checked) {
+                    setGender([...gender, "female"]);
+                  } else {
+                    setGender(gender.filter(g => g !== "female"));
+                  }
+                }} />
               <Label htmlFor="gender_female" className="font-medium text-sm text-[#00171F]">Cái</Label>
             </div>
           </div>
@@ -46,34 +62,22 @@ export const Filter = ({ gender, setGender, color, setColor }) => {
         <div className="border-b border-b-[#EBEEEF] py-4">
           <div className="font-bold text-[#00171F] mb-2.5">Màu sắc</div>
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Checkbox 
-                id="color_black"
-                checked={color.includes("Đen")}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setColor([...color, "Đen"]);
-                  } else {
-                    setColor(color.filter(c => c !== "Đen"));
-                  }
-                }}
-              />
-              <Label htmlFor="color_black" className="font-medium text-sm text-[#00171F]">Đen</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox 
-                id="color_white"
-                checked={color.includes("Trắng")}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setColor([...color, "Trắng"]);
-                  } else {
-                    setColor(color.filter(c => c !== "Trắng"));
-                  }
-                }}
-              />
-              <Label htmlFor="color_white" className="font-medium text-sm text-[#00171F]">Trắng</Label>
-            </div>
+            {colorList.length > 0 && colorList.map((item, index) => (
+              <div className="flex items-center gap-2" key={index}>
+                <Checkbox
+                  id={`${item.color_slug}`}
+                  checked={color.includes(item.color_slug)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setColor([...color, item.color_slug]);
+                    } else {
+                      setColor(color.filter(c => c !== item.color_slug));
+                    }
+                  }}
+                />
+                <Label htmlFor={`${item.color_slug}`} className="font-medium text-sm text-[#00171F]">{item.color}</Label>
+              </div>
+            ))}
           </div>
         </div>
       </div>

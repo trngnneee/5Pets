@@ -9,6 +9,7 @@ class Category(me.Document):
     updatedAt = me.DateTimeField(default=lambda: datetime.now(timezone.utc))
     createdBy = me.StringField()
     updatedBy = me.StringField()
+    slug = me.StringField()
 
     meta = {
         "collection": "category"

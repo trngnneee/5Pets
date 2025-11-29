@@ -15,6 +15,7 @@ class Pet(me.Document):
     createdBy = me.StringField()
     updatedBy = me.StringField()
     slug = me.StringField()
+    color_slug = me.StringField()
 
     meta = {
         "collection": "pet"

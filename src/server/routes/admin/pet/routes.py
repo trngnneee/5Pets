@@ -8,6 +8,7 @@ from middleware.cloudinary import upload_to_cloudinary
 from middleware.adminAuth import admin_required
 from model.pet import Pet
 from model.admin import Admin
+from slugify import slugify
 
 @pet_bp.route('/create', methods=['POST'])
 @admin_required
@@ -33,7 +34,9 @@ def adminCreatePetPost():
         description=description,
         imageList=imageList,
         createdBy=str(g.current_admin.id),
-        updatedBy=str(g.current_admin.id)
+        updatedBy=str(g.current_admin.id),
+        color_slug=slugify(color),
+        slug=slugify(name)
     )
     new_pet.save()
     
@@ -70,7 +73,9 @@ def getPetList():
 
     # Search
     if (request.args.get("keyword")):
-        filter["slug__icontains"] = request.args.get("keyword")
+        keyword = request.args.get("keyword")
+        regex = f".*{keyword}.*"
+        filter["slug__iregex"] = regex
 
     # Category Filter
     if request.args.get("category"):
@@ -281,12 +286,14 @@ def importPets():
             "price": info.get("price", 0),
             "color": info.get("more_information", {}).get("Màu", "Không xác định"),
             "description": info.get("description", "")[0] if info.get("description") else "",
-            "category": info.get("category"),
+            "category": info.get("categoryId"),
             "imageList": [],
             "createdBy": str(g.current_admin.id),
             "updatedBy": str(g.current_admin.id),
             "createdAt": datetime.now(timezone.utc),
-            "updatedAt": datetime.now(timezone.utc)
+            "updatedAt": datetime.now(timezone.utc),
+            "color_slug": slugify(info.get("more_information", {}).get("Màu", "Không xác định")),
+            "slug": slugify(name)
         }
 
         for img_url in info.get("link_image_file", []):

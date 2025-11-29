@@ -24,11 +24,12 @@ export const Section1 = () => {
                 src="itemSection1_2.svg"
               />
             </div>
+            <div className="text-[10px] italic mt-[10px]">Website này chỉ phục vụ mục đích học tập. Không dùng cho mục đích thương mại.</div>
           </div>
           <div className="relative" data-aos="fade-up" data-aos-delay="100">
             <div className="w-[550px] h-auto overflow-hidden z-10 relative">
               <img
-                src="/section1.svg"
+                src="/section1.png"
                 className="w-full h-full object-cover"
               />
             </div>

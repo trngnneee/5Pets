@@ -5,6 +5,7 @@ from middleware.cloudinary import upload_to_cloudinary
 from middleware.adminAuth import admin_required
 from model.category import Category
 from model.admin import Admin
+from slugify import slugify
 
 @category_bp.route('/create', methods=['POST'])
 @admin_required
@@ -19,7 +20,8 @@ def adminCreateCategoryPost():
     parent=parent,
     avatar=avatar,
     createdBy=str(g.current_admin.id),
-    updatedBy=str(g.current_admin.id)
+    updatedBy=str(g.current_admin.id),
+    slug=slugify(name)
   )
   newRecord.save()
 
@@ -56,7 +58,9 @@ def adminCategoryListGet():
 
     # Search
     if (request.args.get("keyword")):
-        filter["name__icontains"] = request.args.get("keyword")
+        keyword = request.args.get("keyword")
+        regex = f".*{keyword}.*"
+        filter["slug__iregex"] = regex
 
     # Pagination
     totalItem = Category.objects.filter(**filter).count()
