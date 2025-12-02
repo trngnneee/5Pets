@@ -4,7 +4,7 @@
 
 ```ini
 project-root/
-│
+│── data/              # contains crawls data
 ├── pa/               # Contains proposals
 ├── docs/             # Contains related documentation
 ├── src/
