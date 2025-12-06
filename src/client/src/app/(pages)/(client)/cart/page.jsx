@@ -30,6 +30,12 @@ export default function CartPage() {
     fetchData();
   }, []);
 
+  const handleRemoveSuccess = (id) => {
+    const newPetDetailList = petDetailList.filter((pet) => pet.id !== id);
+    setPetDetailList(newPetDetailList);
+    setTotalPrice(newPetDetailList.map((item) => convertToNumber(item.price)).reduce((a, b) => a + b, 0));
+  }
+
   return (
     <>
       <div className="container mx-auto my-5">
@@ -40,6 +46,7 @@ export default function CartPage() {
               <CartItem 
                 key={index}
                 pet={pet}
+                onRemoveSuccess={handleRemoveSuccess}
               />
             ))}
             {petDetailList.length === 0 && (

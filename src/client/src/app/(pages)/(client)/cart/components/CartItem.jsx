@@ -1,20 +1,60 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { X } from "lucide-react"
+import { removeItemFromCart } from "@/helper/cartHelper"
+import { CircleAlertIcon, X } from "lucide-react"
 
-export const CartItem = ({ pet }) => {
+export const CartItem = ({ pet, onRemoveSuccess = (id) => {} }) => {
   return (
     <>
       <div className="flex gap-[30px] border-b border-b-gray-200 pb-5">
         <div className="flex flex-col items-center justify-between">
-          <Button className={"bg-transparent hover:bg-transparent shadow-none text-[var(--main-color)]"}>
-            <X/>
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger
+              asChild
+            >
+              <Button className={"bg-transparent hover:bg-transparent shadow-none text-[var(--main-color)]"}>
+                <X />
+              </Button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+                <div
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+                  aria-hidden="true"
+                >
+                  <CircleAlertIcon className="opacity-80" size={16} />
+                </div>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Xác nhận xóa khỏi giỏ hàng?</AlertDialogTitle>
+                  <AlertDialogDescription>Sản phẩm của bạn sẽ được xóa khỏi giỏ hàng</AlertDialogDescription>
+                </AlertDialogHeader>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Hủy</AlertDialogCancel>
+                <AlertDialogAction onClick={() => {
+                  removeItemFromCart(pet.id)
+                  onRemoveSuccess(pet.id)
+                }}>Xác nhận</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Checkbox defaultChecked={true} className={"checked:bg-[var(--main-color)]"} />
           <div></div>
         </div>
         <div className="w-[180px] h-[150px] overflow-hidden rounded-xl">
-          <img 
+          <img
             src={pet.imageList[0]}
             className="w-full h-full object-cover"
           />
