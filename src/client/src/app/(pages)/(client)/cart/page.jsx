@@ -24,7 +24,7 @@ export default function CartPage() {
       const promise = await clientPetDetailList(idList);
       if (promise.code === "success") {
         setPetDetailList(promise.data);
-        setTotalPrice(promise.data.map((item) => convertToNumber(item.price)).reduce((a, b) => a + b, 0));
+        setTotalPrice(promise.data.map((item) => item.price).reduce((a, b) => a + b, 0));
       } 
     } 
     fetchData();
@@ -33,7 +33,7 @@ export default function CartPage() {
   const handleRemoveSuccess = (id) => {
     const newPetDetailList = petDetailList.filter((pet) => pet.id !== id);
     setPetDetailList(newPetDetailList);
-    setTotalPrice(newPetDetailList.map((item) => convertToNumber(item.price)).reduce((a, b) => a + b, 0));
+    setTotalPrice(newPetDetailList.map((item) => item.price).reduce((a, b) => a + b, 0));
   }
 
   return (

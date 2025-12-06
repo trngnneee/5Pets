@@ -72,7 +72,7 @@ export const CartItem = ({ pet, onRemoveSuccess = (id) => {} }) => {
             <div className="font-bold mb-[30px]">Số lượng:</div>
             <div className="flex items-center gap-5">
               <div>Con:</div>
-              <div>1 x <span className="text-[var(--main-color)] font-semibold">{pet.price} VND</span></div>
+              <div>1 x <span className="text-[var(--main-color)] font-semibold">{pet.price.toLocaleString("vi-VN")} VND</span></div>
             </div>
           </div>
         </div>
