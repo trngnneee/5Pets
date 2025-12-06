@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { clientPetDetailList } from "@/lib/clientAPI/pet";
 import JustValidate from "just-validate";
 import { clientOrderCreate } from "@/lib/clientAPI/order";
-import { toastHandler } from "@/lib/toastHandler";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function CartPage() {
   const router = useRouter();
@@ -36,6 +36,12 @@ export default function CartPage() {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const filtered = petDetailList.filter(pet => selectedItem.includes(pet.id));
+    const total = filtered.reduce((sum, item) => sum + item.price, 0);
+    setTotalPrice(total);
+  }, [selectedItem])
 
   const handleRemoveSuccess = (id) => {
     const newPetDetailList = petDetailList.filter((pet) => pet.id !== id);
@@ -108,6 +114,12 @@ export default function CartPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (submit) {
+      if (selectedItem.length === 0) {
+        toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
+        setSubmit(false);
+        return;
+      }
+
       const fullname = e.target.fullname.value;
       const phone = e.target.phone.value;
       const email = e.target.email.value;
@@ -123,7 +135,28 @@ export default function CartPage() {
         idList: selectedItem
       };
       const promise = clientOrderCreate(finalData);
-      toastHandler(promise, router, "/")
+      toast.promise(
+        promise,
+        {
+          loading: "Đang xử lý đơn hàng...",
+          success: (data) => {
+            const currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+            const newCart = currentCart.filter(id => !selectedItem.includes(id));
+            localStorage.setItem("cart", JSON.stringify(newCart));
+
+            const petDetailListAfterOrder = petDetailList.filter(pet => !selectedItem.includes(pet.id));
+            setPetDetailList(petDetailListAfterOrder);
+            setTotalPrice(petDetailListAfterOrder.map((item) => item.price).reduce((a, b) => a + b, 0));
+
+            setSelectedItem(JSON.parse(localStorage.getItem("cart")) || []);
+            router.push(`/order/success`);
+            return data.message
+          },
+          error: (data) => {
+            return data.message;
+          }
+        }
+      )
     }
   }
 
