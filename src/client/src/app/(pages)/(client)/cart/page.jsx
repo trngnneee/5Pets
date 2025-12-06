@@ -8,12 +8,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { clientPetDetailList } from "@/lib/clientAPI/pet";
-import { convertToNumber } from "@/helper/cartHelper";
+import JustValidate from "just-validate";
+import { clientOrderCreate } from "@/lib/clientAPI/order";
+import { toastHandler } from "@/lib/toastHandler";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
+  const router = useRouter();
   const [petDetailList, setPetDetailList] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("momo");
   const [totalPrice, setTotalPrice] = useState(0);
+  const [selectedItem, setSelectedItem] = useState([]);
+  const [submit, setSubmit] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,8 +31,9 @@ export default function CartPage() {
       if (promise.code === "success") {
         setPetDetailList(promise.data);
         setTotalPrice(promise.data.map((item) => item.price).reduce((a, b) => a + b, 0));
-      } 
-    } 
+        setSelectedItem(idList);
+      }
+    }
     fetchData();
   }, []);
 
@@ -36,6 +43,90 @@ export default function CartPage() {
     setTotalPrice(newPetDetailList.map((item) => item.price).reduce((a, b) => a + b, 0));
   }
 
+  useEffect(() => {
+    const validation = new JustValidate('#cartForm')
+
+    validation
+      .addField('#fullname', [
+        {
+          rule: 'required',
+          errorMessage: 'Họ và tên không được để trống',
+        },
+        {
+          rule: 'minLength',
+          value: 3,
+          errorMessage: 'Họ và tên phải có ít nhất 3 ký tự',
+        },
+        {
+          rule: 'maxLength',
+          value: 50,
+          errorMessage: 'Họ và tên không được vượt quá 50 ký tự',
+        }
+      ])
+      .addField('#phone', [
+        {
+          rule: 'required',
+          errorMessage: 'Số điện thoại không được để trống',
+        },
+        {
+          rule: 'customRegexp',
+          value: /^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-4|6-9])[0-9]{7}$/,
+          errorMessage: 'Số điện thoại không hợp lệ',
+        }
+      ])
+      .addField('#email', [
+        {
+          rule: 'required',
+          errorMessage: 'Email không được để trống',
+        },
+        {
+          rule: 'email',
+          errorMessage: 'Email không hợp lệ',
+        }
+      ])
+      .addField('#address', [
+        {
+          rule: 'required',
+          errorMessage: 'Địa chỉ không được để trống',
+        },
+        {
+          rule: 'minLength',
+          value: 10,
+          errorMessage: 'Địa chỉ phải có ít nhất 10 ký tự',
+        },
+        {
+          rule: 'maxLength',
+          value: 100,
+          errorMessage: 'Địa chỉ không được vượt quá 100 ký tự',
+        }
+      ])
+      .onSuccess(() => {
+        setSubmit(true);
+      })
+  }, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (submit) {
+      const fullname = e.target.fullname.value;
+      const phone = e.target.phone.value;
+      const email = e.target.email.value;
+      const address = e.target.address.value;
+      const note = e.target.note.value;
+      const finalData = {
+        fullname: fullname,
+        phone: phone,
+        email: email,
+        address: address,
+        note: note,
+        payment_method: paymentMethod,
+        idList: selectedItem
+      };
+      const promise = clientOrderCreate(finalData);
+      toastHandler(promise, router, "/")
+    }
+  }
+
   return (
     <>
       <div className="container mx-auto my-5">
@@ -43,10 +134,12 @@ export default function CartPage() {
           <div className="font-bold text-[20px] text-[var(--main-color)] mb-[30px]">Giỏ hàng</div>
           <div className="flex flex-col gap-[30px]">
             {petDetailList.length > 0 && petDetailList.map((pet, index) => (
-              <CartItem 
+              <CartItem
                 key={index}
                 pet={pet}
                 onRemoveSuccess={handleRemoveSuccess}
+                selectedItem={selectedItem}
+                setSelectedItem={setSelectedItem}
               />
             ))}
             {petDetailList.length === 0 && (
@@ -69,45 +162,45 @@ export default function CartPage() {
           </div>
         </div>
         <div className="shadow-xl p-[30px] rounded-2xl border border-gray-100 mt-5">
-          <form>
+          <form id="cartForm" onSubmit={handleSubmit}>
             <div className="font-bold text-[20px] text-[var(--main-color)] mb-[30px]">Thông tin khách hàng</div>
             <div className="flex items-center gap-[30px]">
-              <div className="w-full *:not-first:mt-2">
+              <div className="w-full *:not-first:mt-2 mb-5">
                 <Label htmlFor="fullname" className="mb-2 text-[var(--main-color)]">Họ và tên</Label>
                 <Input
                   type="text"
                   name="fullname"
+                  id="fullname"
                   placeholder="Le Van A"
-                  className="mb-5"
                 />
               </div>
-              <div className="w-full *:not-first:mt-2">
+              <div className="w-full *:not-first:mt-2 mb-5">
                 <Label htmlFor="phone" className="mb-2 text-[var(--main-color)]">Số điện thoại</Label>
                 <Input
                   type="text"
                   name="phone"
+                  id="phone"
                   placeholder="0123456789"
-                  className="mb-5"
                 />
               </div>
             </div>
             <div className="flex items-center gap-[30px]">
-              <div className="w-full *:not-first:mt-2">
+              <div className="w-full *:not-first:mt-2 mb-5">
                 <Label htmlFor="email" className="mb-2 text-[var(--main-color)]">Email</Label>
                 <Input
                   type="email"
                   name="email"
+                  id="email"
                   placeholder="example@example.com"
-                  className="mb-5"
                 />
               </div>
-              <div className="w-full *:not-first:mt-2">
+              <div className="w-full *:not-first:mt-2 mb-5">
                 <Label htmlFor="address" className="mb-2 text-[var(--main-color)]">Địa chỉ</Label>
                 <Input
                   type="text"
                   name="address"
+                  id="address"
                   placeholder="123 Đường ABC, Quận 1, TP.HCM"
-                  className="mb-5"
                 />
               </div>
             </div>
@@ -115,6 +208,7 @@ export default function CartPage() {
               <Label htmlFor="note" className="mb-2 text-[var(--main-color)]">Ghi chú đơn hàng</Label>
               <Textarea
                 placeholder="Ghi chú đơn hàng (nếu có)"
+                id="note"
                 className="w-full mb-5"
               />
             </div>
@@ -208,7 +302,7 @@ export default function CartPage() {
                 </div>
               )}
             </div>
-            <Button className={"w-full mt-[30px] bg-[var(--main-color)] hover:bg-[var(--main-hover)]"}>Đặt hàng</Button>
+            <Button disabled={submit} className={"w-full mt-[30px] bg-[var(--main-color)] hover:bg-[var(--main-hover)]"}>Đặt hàng</Button>
           </form>
         </div>
       </div>

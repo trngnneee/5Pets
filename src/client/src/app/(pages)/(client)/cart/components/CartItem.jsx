@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { removeItemFromCart } from "@/helper/cartHelper"
 import { CircleAlertIcon, X } from "lucide-react"
 
-export const CartItem = ({ pet, onRemoveSuccess = (id) => {} }) => {
+export const CartItem = ({ pet, onRemoveSuccess = (id) => { }, selectedItem, setSelectedItem }) => {
   return (
     <>
       <div className="flex gap-[30px] border-b border-b-gray-200 pb-5">
@@ -50,7 +50,17 @@ export const CartItem = ({ pet, onRemoveSuccess = (id) => {} }) => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Checkbox defaultChecked={true} className={"checked:bg-[var(--main-color)]"} />
+          <Checkbox
+            defaultChecked={selectedItem.includes(pet.id)}
+            onCheckedChange={() => {
+              if (selectedItem.includes(pet.id)) {
+                setSelectedItem(selectedItem.filter(id => id !== pet.id))
+              } else {
+                setSelectedItem([...selectedItem, pet.id])
+              }
+            }}
+            className={"checked:bg-[var(--main-color)]"}
+          />
           <div></div>
         </div>
         <div className="w-[180px] h-[150px] overflow-hidden rounded-xl">
