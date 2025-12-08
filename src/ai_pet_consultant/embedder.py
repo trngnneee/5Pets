@@ -8,6 +8,5 @@ class Embedder:
         print(f"Embedder initialized with model: {model_name}")
 
     def get_embedding(self, texts):
-        """Tạo vector nhúng cho một danh sách văn bản."""
         # convert_to_tensor=False để trả về numpy array
         return self.model.encode(texts, convert_to_tensor=False)

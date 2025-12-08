@@ -14,8 +14,6 @@ class PromptBuilder:
         """
 
     def build_prompt(self, user_query: str, retrieved_data: list):
-        """Tạo cấu trúc prompt hoàn chỉnh bao gồm system prompt và context."""
-
         # 1. Định dạng Context từ dữ liệu tìm được
         context_parts = []
         if not retrieved_data:
@@ -35,9 +33,7 @@ class PromptBuilder:
         # 2. Gộp System Prompt và Context thành một khối hướng dẫn
         full_instruction = f"{self.base_system_prompt}\n\n{context_string}"
 
-        # 3. Trả về cấu trúc prompt cho Gemini/LLM API
-        # Chúng ta sẽ trả về 2 phần tử Content: 1 cho hướng dẫn, 1 cho câu hỏi.
-        # Lưu ý: Chúng ta phải sử dụng cấu trúc 'role' và 'parts'
+        # 3. Trả về cấu trúc prompt cho Gemini/LLM AP
         return [
             {
                 "role": "user",

@@ -12,13 +12,11 @@ class Retriever:
         self.documents = documents
         self.product_keys = list(documents.keys()) # Lưu thứ tự các keys
         
-        # 1. ĐỊNH DẠNG VĂN BẢN (ĐÃ DI CHUYỂN LÊN TRƯỚC)
         self.texts_to_index = [
             f"{p['title']} ({p['type']} - {p['category']}). {p['description_short']}. {p['info_detailed']}"
             for p in documents.values()
         ]
         
-        # 2. GỌI HÀM XÂY DỰNG INDEX (GỌI SAU KHI texts_to_index ĐƯỢC ĐỊNH NGHĨA)
         self.faiss_index = self._build_vector_index() 
         
 

@@ -32,7 +32,7 @@ class Consultant:
 
             # 3. Generation (Gọi LLM API)
             response = self.client.models.generate_content(
-                model="gemini-2.5-flash", # Lựa chọn mô hình tối ưu cho Chatbot
+                model="gemini-2.5-flash", 
                 contents=prompt
             )
             return response.text

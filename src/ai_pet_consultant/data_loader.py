@@ -9,14 +9,12 @@ class DataLoader:
     """Class chịu trách nhiệm load và chuẩn hóa dữ liệu sản phẩm."""
 
     def __init__(self, cat_file='data_cat.json', dog_file='data_dog.json'):
-        # Giả định các file data_cat.json và data_dog.json nằm cùng cấp
         self.cat_file = cat_file 
         self.dog_file = dog_file
         
     def _clean_price(self, price_str):
         """Hàm nội bộ làm sạch chuỗi giá thành số."""
         if price_str:
-            # Loại bỏ đơn vị tiền tệ (₫), dấu phân cách hàng nghìn (.), và ký hiệu khoảng trắng (\xa0)
             return re.sub(r'[^\d]', '', price_str.split('\xa0')[0])
         return '0'
 
