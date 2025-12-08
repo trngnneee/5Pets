@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { CirclePlay } from "lucide-react";
 
@@ -17,17 +19,24 @@ export const Section1 = () => {
                 Giới thiệu
                 <CirclePlay />
               </Button>
-              <Button className="bg-[#003459] hover:bg-[#012640] rounded-[57px] py-3 px-7">Khám phá ngay</Button>
+              <Button
+                onClick={() => {
+                  document.getElementById("section2")?.scrollIntoView({ behavior: "smooth", duration: "500" });
+                }}
+                className="bg-[#003459] hover:bg-[#012640] rounded-[57px] py-3 px-7"
+              >
+                Khám phá ngay
+              </Button>
             </div>
             <div className="absolute -left-1/4 bottom-0 z-0 overflow-hidden">
               <img
                 src="itemSection1_2.svg"
               />
             </div>
-            <div className="text-[10px] italic mt-[10px]">Website này chỉ phục vụ mục đích học tập. Không dùng cho mục đích thương mại.</div>
+            <div className="text-[10px] italic mt-2.5" data-aos="fade-up" data-aos-delay="700">Website này chỉ phục vụ mục đích học tập. Không dùng cho mục đích thương mại.</div>
           </div>
-          <div className="relative" data-aos="fade-up" data-aos-delay="100">
-            <div className="w-[550px] h-auto overflow-hidden z-10 relative">
+          <div className="relative">
+            <div className="w-[550px] h-auto overflow-hidden z-10 relative" data-aos="zoom-in" data-aos-delay="300">
               <img
                 src="/section1.png"
                 className="w-full h-full object-cover"

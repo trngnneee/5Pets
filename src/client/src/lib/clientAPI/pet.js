@@ -53,3 +53,21 @@ export const clientPetSearch = async (keyword) => {
 
   return data;
 }
+
+export const clientPetDetailList = async (idList) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pet/detail-list`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ idList }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Lấy danh sách thú cưng thất bại");
+  }
+
+  return data;
+}

@@ -1,7 +1,12 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export const SectionHeader = () => {
+  const router = useRouter();
+  
   return (
     <>
       <div className="flex justify-between items-center mb-7">
@@ -13,6 +18,9 @@ export const SectionHeader = () => {
         <div>
           <Button
             className="bg-transparent text-[#002A48] hover:bg-[#80808023] border-[1.5px] border-[#003459] rounded-[57px] py-3 px-7"
+            onClick={() => {
+              router.push('/category/692b001e8b153579ab1b5bf1');
+            }}
           >
             Xem thêm
             <ChevronRight />

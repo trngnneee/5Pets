@@ -74,7 +74,7 @@ export const InitialUserTable = () => {
                   <td className="p-3 flex items-center justify-center gap-2">
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button className="bg-green-500 hover:bg-green-600 text-white">
+                        <Button className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white">
                           <Check />
                         </Button>
                       </AlertDialogTrigger>
