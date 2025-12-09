@@ -8,6 +8,10 @@ export const AdminDashboardVariable = [
     value: "pet",
   },
   {
+    label: "Quản lí đơn hàng",
+    value: "order",
+  },
+  {
     label: "Quản lí admin",
     value: "user",
   }
@@ -21,5 +25,20 @@ export const genderList = [
   {
     label: "Cái",
     value: "female"
+  }
+]
+
+export const orderStatusVariable = [
+  {
+    label: "Chờ xác nhận",
+    value: "pending"
+  },
+  {
+    label: "Đang giao hàng",
+    value: "shipping"
+  },
+  {
+    label: "Đã giao hàng",
+    value: "delivered"
   }
 ]
