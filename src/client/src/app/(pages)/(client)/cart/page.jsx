@@ -149,7 +149,7 @@ export default function CartPage() {
             setTotalPrice(petDetailListAfterOrder.map((item) => item.price).reduce((a, b) => a + b, 0));
 
             setSelectedItem(JSON.parse(localStorage.getItem("cart")) || []);
-            router.push(`/order/success`);
+            router.push(`/order/success/${data.order_id}`);
             return data.message
           },
           error: (data) => {

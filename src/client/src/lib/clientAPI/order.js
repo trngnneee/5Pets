@@ -15,3 +15,17 @@ export const clientOrderCreate = async (finalData) => {
 
   return data;
 }
+
+export const clientOrderDetail = async (id) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/order/detail/${id}`, {
+    method: "GET",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy thông tin đơn hàng thất bại");
+  }
+
+  return data;
+}

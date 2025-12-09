@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { removeItemFromCart } from "@/helper/cartHelper"
 import { CircleAlertIcon, X } from "lucide-react"
 
-export const CartItem = ({ pet, onRemoveSuccess = (id) => { }, selectedItem, setSelectedItem }) => {
+export const CartItem = ({ pet, onRemoveSuccess = (id) => { }, selectedItem = [], setSelectedItem = () => {} }) => {
   return (
     <>
       <div className="flex gap-[30px] border-b border-b-gray-200 pb-5">

@@ -56,5 +56,55 @@ def create_order():
 
     return jsonify({
         "code": "success",
-        "message": "Đặt hàng thành công!"
+        "message": "Đặt hàng thành công!",
+        "order_id": str(order.id)
+    })
+
+@order_bp.route('/detail/<order_id>', methods=['GET'])
+def get_order_detail(order_id):
+    order = Order.objects(id=order_id).first()
+    if not order:
+        return jsonify({
+            "code": "error",
+            "message": "Đơn hàng không tồn tại!",
+        })
+    
+    order_detail = {
+        "order_id": str(order.id),
+        "payment_method": order.payment_method,
+        "total": order.total,
+        "address": order.address,
+        "phone": order.phone,
+        "note": order.note,
+    }
+
+    order_details = OrderDetail.objects(order_id=order.id)
+    pets = []
+    for detail in order_details:
+        pet_id = str(detail.pet_id.id)
+        pet = Pet.objects(id=pet_id).first()
+        if pet:
+            pets.append({
+                "pet_id": str(pet.id),
+                "name": pet.name,
+                "price": pet.price,
+                "quantity": detail.quantity,
+                "order_detail_total": detail.order_detail_total,
+                "imageList": pet.imageList
+            })
+
+    order_detail["pets"] = pets
+
+    customer = Customer.objects(id=order.customer_id.id).first()
+    if customer:
+        order_detail["customer"] = {
+            "customer_id": str(customer.id),
+            "fullname": customer.fullname,
+            "email": customer.email
+        }
+
+    return jsonify({
+        "code": "success",
+        "message": "Lấy thông tin đơn hàng thành công!",
+        "order_detail": order_detail
     })
