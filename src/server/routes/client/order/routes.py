@@ -108,3 +108,62 @@ def get_order_detail(order_id):
         "message": "Lấy thông tin đơn hàng thành công!",
         "order_detail": order_detail
     })
+
+@order_bp.route('/list', methods=['POST'])
+def get_order_list():
+    data = request.get_json()
+    email = data.get("email")
+    customer = Customer.objects(email=email).first()
+    if not customer:
+        return jsonify({
+            "code": "error",
+            "message": "Khách hàng không tồn tại!",
+        })
+
+    orders = Order.objects(customer_id=customer.id).order_by('-id')
+    order_list = []
+    for order in orders:
+        customer_detail = Customer.objects(id=order.customer_id.id).first()
+        if not customer_detail:
+            continue
+
+        order_detail = OrderDetail.objects(order_id=order.id)
+        if not order_detail:
+            continue
+
+        detail_list = []
+        for detail in order_detail:
+            pet = Pet.objects(id=detail.pet_id.id).first()
+            if not pet:
+                continue
+
+            detail_list.append({
+                "pet_id": str(pet.id),
+                "name": pet.name,
+                "price": pet.price,
+                "quantity": detail.quantity,
+                "order_detail_total": detail.order_detail_total,
+                "imageList": pet.imageList
+            })
+
+
+        order_list.append({
+            "order_id": str(order.id),
+            "payment_method": order.payment_method,
+            "total": order.total,
+            "address": order.address,
+            "phone": order.phone,
+            "total" : order.total,
+            "customer": {
+                "fullname": customer_detail.fullname,
+                "email": customer_detail.email
+            },
+            "order_details": detail_list,
+            "status": order.status
+        })
+
+    return jsonify({
+        "code": "success",
+        "message": "Lấy danh sách đơn hàng thành công!",
+        "order_list": order_list
+    })
