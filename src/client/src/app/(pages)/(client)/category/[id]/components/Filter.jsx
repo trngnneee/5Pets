@@ -22,7 +22,7 @@ export const Filter = ({ gender, setGender, color, setColor }) => {
   return (
     <>
       <div className="w-[280px] sticky top-[100px] h-fit self-start">
-        <div className="text-[#003459] flex items-center gap-1 mb-3.5">
+        <div className="text-[var(--main-color)] flex items-center gap-1 mb-3.5">
           <Funnel />
           <div className="text-[20px] font-bold">Bộ Lọc</div>
         </div>

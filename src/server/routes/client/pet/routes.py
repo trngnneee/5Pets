@@ -70,7 +70,7 @@ def pet_detail(category_id):
     if color_list:
         query = query.filter(color_slug__in=color_list)
 
-    itemsPerPage = 9
+    itemsPerPage = 3 * 5
     totalItem = query.count()
     totalPages = (totalItem + itemsPerPage - 1) // itemsPerPage
 
