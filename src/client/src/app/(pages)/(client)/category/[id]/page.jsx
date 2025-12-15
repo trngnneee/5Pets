@@ -60,7 +60,7 @@ export default function CategoryPage() {
           setColor={setColor}
         />
         <div>
-          <div className="font-bold text-[24px] text-[#003459] mb-3.5">{categoryName}</div>
+          <div className="font-bold text-[24px] text-[var(--main-color)] mb-3.5">{categoryName}</div>
           <div className="grid grid-cols-3 gap-5 mb-5">
             {(data.length > 0 && loaded) ? data.map((item, index) => (
               <ItemCard

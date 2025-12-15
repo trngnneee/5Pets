@@ -4,7 +4,7 @@ import { AdminDashboardVariable } from "@/config/variable";
 import { adminLogout } from "@/lib/adminAPI/account";
 import { toastHandler } from "@/lib/toastHandler";
 import { cn } from "@/lib/utils";
-import { Dog, Grid2X2, Power, User } from "lucide-react";
+import { Dog, Grid2X2, Power, ShoppingCart, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -19,6 +19,10 @@ export const DashboardSider = () => {
     {
       Icon: Dog,
       link: "/admin/pet"
+    },
+    {
+      Icon: ShoppingCart,
+      link: "/admin/order"
     },
     {
       Icon: User,

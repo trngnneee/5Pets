@@ -5,6 +5,10 @@ import { FaFacebook } from "react-icons/fa"
 import { FaInstagram } from "react-icons/fa6"
 import { FaTwitter } from "react-icons/fa"
 import { FaYoutube } from "react-icons/fa"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { CircleAlertIcon, ShoppingCart } from "lucide-react"
+import { addItemToCart } from "@/helper/cartHelper"
 
 export const DetailInformation = ({ dogDetail }) => {
   return (
@@ -15,22 +19,46 @@ export const DetailInformation = ({ dogDetail }) => {
           <p className="font-beVietnam font-bold text-[24px] leading-[36px] text-[#00171F]">
             {dogDetail && dogDetail.name}
           </p>
-          <span className="font-beVietnam font-bold text-[20px] leading-[32px] text-[#002A48]">
+          <span className="font-beVietnam font-bold text-[20px] leading-[32px] text-[var(--main-color)]">
             {dogDetail && dogDetail.price} ₫
           </span>
         </div>
         <div className="flex gap-[18px]">
-          <button className="bg-[#003459] rounded-[57px] px-[28px] py-[12px] flex items-center justify-center gap-[10px] w-[111px] h-[44px]">
-            <p className="font-beVietnam font-bold text-[16px] leading-[24px] tracking-[0%] align-bottom text-white">
-              Liên hệ
-            </p>
-          </button>
-          <button className="flex border-[2px] border-[#002A48] rounded-[57px] px-[28px] pl-[24px] py-[8px] gap-[10px] w-[210px] h-[44px] items-center justify-center">
-            <PiChatCircleDotsBold className="w-[26px] h-[28px] text-[#002A48]" />
-            <p className="font-beVietnam font-bold text-[16px] leading-[24px] tracking-[0%] align-bottom text-[#002A48]">
+          <AlertDialog>
+            <AlertDialogTrigger
+              asChild
+            >
+              <Button className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] rounded-full">
+                <ShoppingCart />
+                <span>Thêm vào giỏ hàng</span>
+              </Button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+                <div
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+                  aria-hidden="true"
+                >
+                  <CircleAlertIcon className="opacity-80" size={16} />
+                </div>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Xác nhận thêm vào giỏ hàng?</AlertDialogTitle>
+                  <AlertDialogDescription>Sản phẩm của bạn sẽ được thêm vào giỏ hàng</AlertDialogDescription>
+                </AlertDialogHeader>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Hủy</AlertDialogCancel>
+                <AlertDialogAction onClick={() => addItemToCart(dogDetail.id)}>Xác nhận</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <Button className="flex border-1 border-[var(--main-color)] rounded-full bg-white hover:bg-gray-100 shadow-none">
+            <PiChatCircleDotsBold className="w-[26px] h-[28px] text-[var(--main-color)]" />
+            <p className="font-beVietnam font-bold text-[16px] leading-[24px] tracking-[0%] align-bottom text-[var(--main-color)]">
               Chat với 5Pets
             </p>
-          </button>
+          </Button>
         </div>
         <div className="flex flex-col">
           <div className="flex  py-[8px] border-b-[1px]">
@@ -96,8 +124,8 @@ export const DetailInformation = ({ dogDetail }) => {
         </div>
         <div className="flex w-[252px] h-[32px] gap-[21px] py-[6px] px-[10]">
           <div className="flex w-[82px] h-[20px] gap-[8px]">
-            <FiShare2 className="w-[20px] h-[20px] text-[#002A48]" />
-            <p className="font-beVietnam font-bold text-[14px] leading-[20px] tracking-[0%] align-bottom text-[#002A48]">
+            <FiShare2 className="w-[20px] h-[20px] text-[var(--main-color)]" />
+            <p className="font-beVietnam font-bold text-[14px] leading-[20px] tracking-[0%] align-bottom text-[var(--main-color)]">
               Chia sẻ:
             </p>
           </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import { formatDate } from "@/helper/date";
 import { adminGetList } from "@/lib/adminAPI/account";
 import { useEffect, useState } from "react";
 
@@ -39,8 +40,8 @@ export const UserTable = () => {
                 >
                   <td className="p-3">{item.fullname}</td>
                   <td className="p-3">{item.email}</td>
-                  <td className="p-3">{item.createdAt || "-"}</td>
-                  <td className="p-3">{item.updatedAt || "-"}</td>
+                  <td className="p-3">{formatDate(item.createdAt) || "-"}</td>
+                  <td className="p-3">{formatDate(item.updatedAt) || "-"}</td>
                   <td className="p-3">{item.approvedBy || "-"}</td>
                 </tr>
               ))}

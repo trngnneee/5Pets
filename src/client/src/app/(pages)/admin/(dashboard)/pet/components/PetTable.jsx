@@ -93,7 +93,7 @@ export default function PetTable({ filter, itemsToDelete, setItemsToDelete, setT
                 </td>
                 <td className="p-3">{item.age}</td>
                 <td className="p-3">{item.gender == "male" ? "Đực" : "Cái"}</td>
-                <td className="p-3">{item.price}</td>
+                <td className="p-3">{item.price.toLocaleString("vi-VN")}</td>
                 <td className="p-3">
                   <div className="flex flex-col">
                     <span>{item.createdBy}</span>

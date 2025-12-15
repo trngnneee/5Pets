@@ -7,3 +7,4 @@ flask-jwt-extended
 Flask-Mail
 cloudinary
 python-slugify
+numpy
