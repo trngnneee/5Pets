@@ -11,5 +11,5 @@ class Admin(me.Document):
     approvedBy = me.StringField()
 
     meta = {
-        "collection": "admin"
+        "collection": "admin_accounts"
     }
