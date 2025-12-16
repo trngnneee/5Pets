@@ -3,6 +3,7 @@ from flask import make_response, jsonify, request
 from model.pet import Pet
 from model.category import Category
 from helper.getAllChildCategoryID import getAllChildCategoryID
+from slugify import slugify
 
 @pet_bp.route("/list", methods=["GET"])
 def list_pets():
@@ -152,7 +153,8 @@ def search_pets():
         }))
         return res
     
-    regex = f".*{keyword}.*"
+    regex = f".*{slugify(keyword)}.*"
+    print(regex)
     raw_pets = Pet.objects(slug__iregex=regex).order_by('-createdAt')
     pet_list = []
     for pet in raw_pets:
