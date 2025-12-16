@@ -21,6 +21,8 @@ cloudinary.config(
     api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
 
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
 def create_app():
     app = Flask(__name__)
 
