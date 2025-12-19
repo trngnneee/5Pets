@@ -60,6 +60,7 @@ def create_app():
     prompt_builder = PromptBuilder(shop_name="5Pets")
     # Khởi tạo consultant
     ai_bot = Consultant(retriever=retriever, prompt_builder=prompt_builder)
+    app.config['AI_CONSULTANT'] = ai_bot
     print("AI Consultant đã sẵn sàng!")
 
     from routes.admin import admin_bp

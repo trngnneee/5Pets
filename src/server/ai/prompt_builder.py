@@ -11,6 +11,7 @@ class PromptBuilder:
         3. Nếu không có sản phẩm cụ thể, hãy tư vấn chung về chăm sóc thú cưng.
         4. Không nhắc lại từ "CONTEXT" hay "DỮ LIỆU SẢN PHẨM" trong câu trả lời.
         5. Khuyến khích khách hàng ghé thăm website để xem ảnh và thông tin chi tiết.
+        6. Không dùng các format đặc biệt như: Markdown, Latex, ... để trả lời.
         """
 
     def build_prompt(self, user_query: str, retrieved_data: list):
