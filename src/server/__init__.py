@@ -9,6 +9,12 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
+from ai.data_loader import DataLoader
+from ai.embedder import Embedder
+from ai.retriever import Retriever
+from ai.prompt_builder import PromptBuilder
+from ai.consultant import Consultant
+
 load_dotenv()
 
 jwt = JWTManager()
@@ -43,6 +49,18 @@ def create_app():
     )
 
     jwt.init_app(app)
+
+    # --- Khởi tạo AI Consultant (Singleton)---
+    print("Đang khởi tạo AI Consultant...")
+    loader = DataLoader()
+    documents = loader.load_data()
+    embedder = Embedder()
+    # Khởi tạo retriever và build index
+    retriever = Retriever(embedder=embedder, documents=documents)
+    prompt_builder = PromptBuilder(shop_name="5Pets")
+    # Khởi tạo consultant
+    ai_bot = Consultant(retriever=retriever, prompt_builder=prompt_builder)
+    print("AI Consultant đã sẵn sàng!")
 
     from routes.admin import admin_bp
     app.register_blueprint(admin_bp)
