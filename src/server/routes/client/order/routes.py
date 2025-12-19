@@ -1,9 +1,22 @@
+import os
 from . import order_bp
 from flask import request, jsonify
 from model.customer import Customer
 from model.order import Order
 from model.order_detail import OrderDetail
 from model.pet import Pet
+import datetime
+import time
+import hmac
+import hashlib
+import requests
+
+ZALOPAY_CONFIG = {
+    "app_id": 2554,
+    "key1": "sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn",
+    "key2": "trMrHtvjo6myautxDUiAcYsVtaeQ8nhf",
+    "endpoint": "https://sb-openapi.zalopay.vn/v2/create"
+}
 
 @order_bp.route('/create', methods=['POST'])
 def create_order():
@@ -53,6 +66,52 @@ def create_order():
         ).save()
 
     order.update(total=total)
+
+    if payment_method == "zalopay":
+        order_data = {
+            "app_id": 2554,
+            "app_user": "5Pets",
+            "app_time": int(time.time() * 1000),
+            "amount": int(total),
+            "app_trans_id": datetime.datetime.now().strftime("%y%m%d") + "_" + str(order.id),
+            "bank_code": "zalopayapp",
+            "embed_data": "{}",
+            "item": "[]",
+            "callback_url": "https://6224e9104cad.ngrok-free.app/order/callback/zalopay/" + str(order.id),
+            "description": f"Thanh toán đơn hàng {str(order.id)}",
+            "mac": ""
+        }
+
+        hmac_input = (
+            f"{order_data['app_id']}|"
+            f"{order_data['app_trans_id']}|"
+            f"{order_data['app_user']}|"
+            f"{order_data['amount']}|"
+            f"{order_data['app_time']}|"
+            f"{order_data['embed_data']}|"
+            f"{order_data['item']}"
+        )
+        mac = hmac.new(
+            ZALOPAY_CONFIG["key1"].encode("utf-8"),
+            hmac_input.encode("utf-8"),
+            hashlib.sha256
+        ).hexdigest()
+        order_data["mac"] = mac
+
+        response = requests.post(
+            ZALOPAY_CONFIG["endpoint"],
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data=order_data
+        )
+
+        zalopay_result = response.json()
+
+        return jsonify({
+            "code": "success",
+            "message": "Đặt hàng thành công!",
+            "order_id": str(order.id),
+            "zalopay": zalopay_result
+        })
 
     return jsonify({
         "code": "success",
@@ -166,4 +225,15 @@ def get_order_list():
         "code": "success",
         "message": "Lấy danh sách đơn hàng thành công!",
         "order_list": order_list
+    })
+
+@order_bp.route('/callback/zalopay/<order_id>', methods=['POST'])
+def zalopay_callback(order_id):
+    data = request.get_json()
+    # Handle Zalopay callback logic here
+    Order.objects(id=order_id).update(status="paid")
+    return jsonify({
+        "code": "success",
+        "message": "Payment status updated successfully!",
+        "data": data
     })

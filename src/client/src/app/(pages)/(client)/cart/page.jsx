@@ -149,7 +149,10 @@ export default function CartPage() {
             setTotalPrice(petDetailListAfterOrder.map((item) => item.price).reduce((a, b) => a + b, 0));
 
             setSelectedItem(JSON.parse(localStorage.getItem("cart")) || []);
-            router.push(`/order/success/${data.order_id}`);
+            if (data.zalopay) {
+              window.location.href = data.zalopay.order_url;
+              return "Chuyển đến trang thanh toán Zalopay...";
+            }
             return data.message
           },
           error: (data) => {
