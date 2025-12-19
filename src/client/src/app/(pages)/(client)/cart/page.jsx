@@ -149,9 +149,13 @@ export default function CartPage() {
             setTotalPrice(petDetailListAfterOrder.map((item) => item.price).reduce((a, b) => a + b, 0));
 
             setSelectedItem(JSON.parse(localStorage.getItem("cart")) || []);
-            if (data.zalopay) {
+            if (data.code == "success" && data.zalopay) {
               window.location.href = data.zalopay.order_url;
               return "Chuyển đến trang thanh toán Zalopay...";
+            }
+            if (data.code == "success" && data.momo){
+              window.location.href = data.momo.payUrl;
+              return "Chuyển đến trang thanh toán Momo...";
             }
             return data.message
           },

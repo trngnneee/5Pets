@@ -1,4 +1,6 @@
+import json
 import os
+import uuid
 from . import order_bp
 from flask import request, jsonify
 from model.customer import Customer
@@ -10,6 +12,8 @@ import time
 import hmac
 import hashlib
 import requests
+from dotenv import load_dotenv
+load_dotenv()
 
 ZALOPAY_CONFIG = {
     "app_id": 2554,
@@ -77,7 +81,7 @@ def create_order():
             "bank_code": "zalopayapp",
             "embed_data": "{}",
             "item": "[]",
-            "callback_url": "https://6224e9104cad.ngrok-free.app/order/callback/zalopay/" + str(order.id),
+            "callback_url": os.getenv("NGROK_URL") + "/order/callback/zalopay/" + str(order.id),
             "description": f"Thanh toán đơn hàng {str(order.id)}",
             "mac": ""
         }
@@ -111,6 +115,53 @@ def create_order():
             "message": "Đặt hàng thành công!",
             "order_id": str(order.id),
             "zalopay": zalopay_result
+        })
+    
+    if payment_method == "momo":
+        MOMO_CONFIG = {
+            "endpoint": "https://test-payment.momo.vn/v2/gateway/api/create",
+            "partnerCode": "MOMO",
+            "accessKey": "F8BBA842ECF85",
+            "secretKey": "K951B6PE1waDMi640xX08PD3vg6EkVlz",
+            "redirectUrl": os.getenv("NGROK_URL") + "/order/callback/momo/" + str(order.id),
+            "ipnUrl": os.getenv("NGROK_URL") + "/order/callback/momo/" + str(order.id),
+            "amount": str(int(total)),
+            "orderId": str(order.id),
+            "requestId": str(order.id),
+            "requestType": "captureWallet",
+            "extraData": "",
+            "orderInfo": f"Pay with momo - Order: {str(order.id)}"
+        }
+
+        rawSignature = "accessKey=" + MOMO_CONFIG["accessKey"] + "&amount=" + MOMO_CONFIG["amount"] + "&extraData=" + MOMO_CONFIG["extraData"] + "&ipnUrl=" + MOMO_CONFIG["ipnUrl"] + "&orderId=" + MOMO_CONFIG["orderId"] + "&orderInfo=" + MOMO_CONFIG["orderInfo"] + "&partnerCode=" + MOMO_CONFIG["partnerCode"] + "&redirectUrl=" + MOMO_CONFIG["redirectUrl"] + "&requestId=" + MOMO_CONFIG["requestId"] + "&requestType=" + MOMO_CONFIG["requestType"]
+        h = hmac.new(bytes(MOMO_CONFIG["secretKey"], 'ascii'), bytes(rawSignature, 'ascii'), hashlib.sha256)
+        signature = h.hexdigest()
+        
+        order_data = {
+            'partnerCode': MOMO_CONFIG["partnerCode"],
+            'partnerName': "Test",
+            'storeId': "MomoTestStore",
+            'requestId': MOMO_CONFIG["requestId"],
+            'amount': MOMO_CONFIG["amount"],
+            'orderId': MOMO_CONFIG["orderId"],
+            'orderInfo': MOMO_CONFIG["orderInfo"],
+            'redirectUrl': MOMO_CONFIG["redirectUrl"],
+            'ipnUrl': MOMO_CONFIG["ipnUrl"],
+            'lang': "vi",
+            'extraData': MOMO_CONFIG["extraData"],
+            'requestType': MOMO_CONFIG["requestType"],
+            'signature': signature
+        }
+
+        data = json.dumps(order_data)
+        clen = len(data)
+        response = requests.post(MOMO_CONFIG["endpoint"], data=data, headers={'Content-Type': 'application/json', 'Content-Length': str(clen)})
+        momo_result = response.json()
+        return jsonify({
+            "code": "success",
+            "message": "Đặt hàng thành công!",
+            "order_id": str(order.id),
+            "momo": momo_result
         })
 
     return jsonify({
@@ -232,6 +283,19 @@ def zalopay_callback(order_id):
     data = request.get_json()
     # Handle Zalopay callback logic here
     Order.objects(id=order_id).update(status="paid")
+    return jsonify({
+        "code": "success",
+        "message": "Payment status updated successfully!",
+        "data": data
+    })
+
+@order_bp.route('/callback/momo', methods=['POST'])
+def momo_callback():
+    data = request.get_json()
+    # Handle Momo callback logic here
+    order_id = data.get("orderId")
+    if order_id:
+        Order.objects(id=order_id).update(status="paid")
     return jsonify({
         "code": "success",
         "message": "Payment status updated successfully!",
