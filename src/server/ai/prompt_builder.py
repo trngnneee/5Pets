@@ -12,6 +12,8 @@ class PromptBuilder:
         4. Không nhắc lại từ "CONTEXT" hay "DỮ LIỆU SẢN PHẨM" trong câu trả lời.
         5. Khuyến khích khách hàng ghé thăm website để xem ảnh và thông tin chi tiết.
         6. Không dùng các format đặc biệt như: Markdown, Latex, ... để trả lời.
+        7. Trả lời không quá 200 từ. Ngắn gọn nhưng đầy đủ.
+        8. Lưu ý KHÔNG DÙNG MARKDOWN trong câu trả lời.
         """
 
     def build_prompt(self, user_query: str, retrieved_data: list):
