@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-client_bp = Blueprint('client', __name__, url_prefix='/api')
+client_bp = Blueprint('client', __name__, url_prefix='/')
 
 from .category import category_bp
 from .pet import pet_bp

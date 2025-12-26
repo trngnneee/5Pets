@@ -26,14 +26,16 @@ export default function OrderTable() {
   useEffect(() => {
     const fetchData = async () => {
       const params = buildFilterParams({ page }, searchParams);
+      //console.log(params);
       const promise = await adminOrderList(params);
+      console.log("Response from backend:", promise.orders_list);
       if (promise.code === "success") {
         setOrderList(promise.orders_list);
         setTotalPages(promise.totalPages);
       }
     }
     fetchData();
-  }, [])
+  }, [page])
 
   return (
     <>

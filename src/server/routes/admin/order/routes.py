@@ -19,7 +19,7 @@ def list_orders():
     page = int(request.args.get("page", 1))
     offset = (page - 1) * limit
 
-    order = Order.objects.skip(offset).limit(limit).order_by('-created_at').filter(**filter)
+    order = Order.objects.filter(**filter).order_by('-created_at').skip(offset).limit(limit)
     orders_list = []
     for o in order:
       updated_by_detail = Admin.objects(id=o.updated_by).first()
@@ -60,6 +60,8 @@ def list_orders():
               })
       orders_list[-1]["order_details"] = details_list
 
+    print("Orders in this page:", len(orders_list))
+    print(totalPages)
     return jsonify({
         "code": "success",
         "message": "Lấy thông tin đơn hàng thành công!",
