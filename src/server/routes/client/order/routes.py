@@ -7,6 +7,7 @@ from model.customer import Customer
 from model.order import Order
 from model.order_detail import OrderDetail
 from model.pet import Pet
+from helper.FlaskMail import send_order_email 
 import datetime
 import time
 import hmac
@@ -70,6 +71,9 @@ def create_order():
         ).save()
 
     order.update(total=total)
+
+    pet_names = [Pet.objects(id=pid).first().name for pid in idList if Pet.objects(id=pid).first()]
+    send_order_email(email, str(order.id), total, pet_names)
 
     if payment_method == "zalopay":
         order_data = {
