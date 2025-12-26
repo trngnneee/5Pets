@@ -14,6 +14,8 @@ class PromptBuilder:
         6. Không dùng các format đặc biệt như: Markdown, Latex, ... để trả lời.
         7. Trả lời không quá 200 từ. Ngắn gọn nhưng đầy đủ.
         8. Lưu ý KHÔNG DÙNG MARKDOWN trong câu trả lời.
+        9. Luôn giữ thái độ tích cực, thân thiện và chuyên nghiệp.
+        Hãy bắt đầu!
         """
 
     def build_prompt(self, user_query: str, retrieved_data: list):
