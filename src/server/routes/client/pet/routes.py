@@ -154,7 +154,7 @@ def search_pets():
         return res
     
     regex = f".*{slugify(keyword)}.*"
-    print(regex)
+    #print(regex)
     raw_pets = Pet.objects(slug__iregex=regex).order_by('-createdAt')
     pet_list = []
     for pet in raw_pets:

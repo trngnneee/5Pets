@@ -74,7 +74,7 @@ def getPetList():
     # Search
     if (request.args.get("keyword")):
         keyword = request.args.get("keyword")
-        regex = f".*{keyword}.*"
+        regex = f".*{slugify(keyword)}.*"
         filter["slug__iregex"] = regex
 
     # Category Filter
