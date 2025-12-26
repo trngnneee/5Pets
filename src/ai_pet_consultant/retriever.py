@@ -51,3 +51,22 @@ class Retriever:
                 results.append(self.documents[key])
 
         return results
+    def add_documents(self, new_documents: dict):
+        """Thêm tài liệu mới vào chỉ mục FAISS."""
+        new_texts = [
+            f"{p['title']} ({p['type']} - {p['category']}). {p['description_short']}. {p['info_detailed']}"
+            for p in new_documents.values()
+        ]
+        
+        new_embeddings = self.embedder.get_embedding(new_texts)
+        new_embeddings = np.asarray(new_embeddings).astype("float32")
+        
+        self.faiss_index.add(new_embeddings)
+        
+        # Cập nhật danh sách tài liệu và keys
+        self.documents.update(new_documents)
+        self.product_keys.extend(new_documents.keys())
+        
+        print(f"Đã thêm {len(new_documents)} tài liệu mới vào Index FAISS.")
+        faiss_index = self.faiss_index
+        return faiss_index
