@@ -16,7 +16,6 @@ import { buttonVariants } from "@/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { buildFilterParams } from "@/helper/paramsHelper";
 import { useSearchParams } from "next/navigation";
-import { formatDate } from "date-fns";
 
 export default function OrderTable() {
   const [orderList, setOrderList] = useState([]);
