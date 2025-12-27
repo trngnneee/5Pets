@@ -117,6 +117,7 @@ export default function AdminPetCreate() {
     formData.append("price", price);
     formData.append("color", color);
     formData.append("description", description);
+    formData.append("stock", stock);
 
     const promise = adminCreatePet(formData);
     toastHandler(promise, router, "/admin/pet");
