@@ -29,25 +29,38 @@ export default function CartPage() {
       }
       const promise = await clientPetDetailList(idList);
       if (promise.code === "success") {
-        setPetDetailList(promise.data);
+        setPetDetailList(promise.data.map((item) => {
+          return {
+            ...item,
+            quantity: 1
+          }
+        }));
         setTotalPrice(promise.data.map((item) => item.price).reduce((a, b) => a + b, 0));
-        setSelectedItem(idList);
+        setSelectedItem(
+          idList.map(id => ({
+            id,
+            quantity: 1
+          }))
+        );
       }
     }
     fetchData();
   }, []);
 
   useEffect(() => {
-    const filtered = petDetailList.filter(pet => selectedItem.includes(pet.id));
-    const total = filtered.reduce((sum, item) => sum + item.price, 0);
+    const total = selectedItem.reduce((sum, selected) => {
+      const pet = petDetailList.find(p => p.id === selected.id);
+      if (!pet) return sum;
+      return sum + pet.price * selected.quantity;
+    }, 0);
+
     setTotalPrice(total);
-  }, [selectedItem])
+  }, [selectedItem, petDetailList]);
 
   const handleRemoveSuccess = (id) => {
-    const newPetDetailList = petDetailList.filter((pet) => pet.id !== id);
-    setPetDetailList(newPetDetailList);
-    setTotalPrice(newPetDetailList.map((item) => item.price).reduce((a, b) => a + b, 0));
-  }
+    setPetDetailList(prev => prev.filter(pet => pet.id !== id));
+    setSelectedItem(prev => prev.filter(item => item.id !== id));
+  };
 
   useEffect(() => {
     const validation = new JustValidate('#cartForm')
@@ -134,6 +147,7 @@ export default function CartPage() {
         payment_method: paymentMethod,
         idList: selectedItem
       };
+      console.log(finalData);
       const promise = clientOrderCreate(finalData);
       toast.promise(
         promise,
@@ -141,19 +155,24 @@ export default function CartPage() {
           loading: "Đang xử lý đơn hàng...",
           success: (data) => {
             const currentCart = JSON.parse(localStorage.getItem("cart")) || [];
-            const newCart = currentCart.filter(id => !selectedItem.includes(id));
+            const selectedIds = selectedItem.map(item => item.id);
+
+            const newCart = currentCart.filter(
+              id => !selectedIds.includes(id)
+            );
             localStorage.setItem("cart", JSON.stringify(newCart));
 
-            const petDetailListAfterOrder = petDetailList.filter(pet => !selectedItem.includes(pet.id));
-            setPetDetailList(petDetailListAfterOrder);
-            setTotalPrice(petDetailListAfterOrder.map((item) => item.price).reduce((a, b) => a + b, 0));
-
-            setSelectedItem(JSON.parse(localStorage.getItem("cart")) || []);
+            setSelectedItem(
+              newCart.map(id => ({
+                id,
+                quantity: 1
+              }))
+            );
             if (data.code == "success" && data.zalopay) {
               window.location.href = data.zalopay.order_url;
               return "Chuyển đến trang thanh toán Zalopay...";
             }
-            if (data.code == "success" && data.momo){
+            if (data.code == "success" && data.momo) {
               window.location.href = data.momo.payUrl;
               return "Chuyển đến trang thanh toán Momo...";
             }
@@ -165,6 +184,7 @@ export default function CartPage() {
         }
       )
     }
+    setSubmit(false);
   }
 
   return (

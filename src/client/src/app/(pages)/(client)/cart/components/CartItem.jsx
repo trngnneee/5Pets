@@ -12,9 +12,37 @@ import {
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { removeItemFromCart } from "@/helper/cartHelper"
-import { CircleAlertIcon, X } from "lucide-react"
+import { ChevronDown, ChevronUp, CircleAlertIcon, X } from "lucide-react"
 
-export const CartItem = ({ pet, onRemoveSuccess = (id) => { }, selectedItem = [], setSelectedItem = () => {} }) => {
+export const CartItem = ({ pet, onRemoveSuccess = (id) => { }, selectedItem = [], setSelectedItem = () => { } }) => {
+  const isSelected = selectedItem.some(item => item.id === pet.id);
+  const currentItem = selectedItem.find(item => item.id === pet.id);
+  const quantity = currentItem?.quantity ?? 1;
+
+  const increaseQuantity = () => {
+    if (!isSelected) return;
+
+    setSelectedItem(prev =>
+      prev.map(item =>
+        item.id === pet.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+  const decreaseQuantity = () => {
+    if (!isSelected) return;
+
+    setSelectedItem(prev =>
+      prev.map(item =>
+        item.id === pet.id
+          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
+          : item
+      )
+    );
+  };
+
   return (
     <>
       <div className="flex gap-[30px] border-b border-b-gray-200 pb-5">
@@ -51,15 +79,20 @@ export const CartItem = ({ pet, onRemoveSuccess = (id) => { }, selectedItem = []
             </AlertDialogContent>
           </AlertDialog>
           <Checkbox
-            defaultChecked={selectedItem.includes(pet.id)}
-            onCheckedChange={() => {
-              if (selectedItem.includes(pet.id)) {
-                setSelectedItem(selectedItem.filter(id => id !== pet.id))
+            checked={isSelected}
+            onCheckedChange={(checked) => {
+              if (checked) {
+                setSelectedItem(prev => [
+                  ...prev,
+                  { id: pet.id, quantity: 1 }
+                ]);
               } else {
-                setSelectedItem([...selectedItem, pet.id])
+                setSelectedItem(prev =>
+                  prev.filter(item => item.id !== pet.id)
+                );
               }
             }}
-            className={"checked:bg-[var(--main-color)]"}
+            className="checked:bg-[var(--main-color)]"
           />
           <div></div>
         </div>
@@ -82,7 +115,31 @@ export const CartItem = ({ pet, onRemoveSuccess = (id) => { }, selectedItem = []
             <div className="font-bold mb-[30px]">Số lượng:</div>
             <div className="flex items-center gap-5">
               <div>Con:</div>
-              <div>1 x <span className="text-[var(--main-color)] font-semibold">{pet.price.toLocaleString("vi-VN")} VND</span></div>
+              <div className="flex flex-col">
+                <button
+                  type="button"
+                  onClick={increaseQuantity}
+                  disabled={!isSelected}
+                  className="disabled:opacity-40"
+                >
+                  <ChevronUp />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={decreaseQuantity}
+                  disabled={!isSelected || quantity === 1}
+                  className="disabled:opacity-40"
+                >
+                  <ChevronDown />
+                </button>
+              </div>
+              <div>
+                {quantity} x{" "}
+                <span className="text-[var(--main-color)] font-semibold">
+                  {pet.price.toLocaleString("vi-VN")} VND
+                </span>
+              </div>
             </div>
           </div>
         </div>
