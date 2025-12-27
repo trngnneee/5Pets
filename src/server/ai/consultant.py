@@ -18,7 +18,7 @@ class Consultant:
         self.retriever = retriever
         self.prompt_builder = prompt_builder
         self.order_service = OrderService(
-            base_url="http://127.0.0.1:5000/api"
+            base_url="http://127.0.0.1:5000"
         )
         api_key = GEMINI_API_KEY
         if not api_key:

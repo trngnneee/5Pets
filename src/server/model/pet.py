@@ -16,6 +16,7 @@ class Pet(me.Document):
     updatedBy = me.StringField()
     slug = me.StringField()
     color_slug = me.StringField()
+    stock = me.IntField(default=1)
 
     meta = {
         "collection": "pet"
