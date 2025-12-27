@@ -30,6 +30,7 @@ export default function AdminPetEdit() {
   const [gender, setGender] = useState("");
   const [price, setPrice] = useState(0);
   const [color, setColor] = useState("");
+  const [stock, setStock] = useState(0);
   const [description, setDescription] = useState("");
   const [submit, setSubmit] = useState(false);
   const router = useRouter();
@@ -287,6 +288,21 @@ export default function AdminPetEdit() {
               name="color"
               value={color}
               onChange={(e) => setColor(e.target.value)}
+            />
+          </div>
+          <div className="w-full flex flex-col gap-3">
+            <Label
+              htmlFor="stock"
+              className="text-sm font-semibold text-[#606060]"
+            >
+              Số lượng
+            </Label>
+            <Input
+              placeholder="1"
+              id="stock"
+              name="stock"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
             />
           </div>
         </div>
