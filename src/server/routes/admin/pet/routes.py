@@ -112,7 +112,8 @@ def getPetList():
             "createdAt": pet.createdAt.strftime("%Y-%m-%d %H:%M:%S"),
             "updatedAt": pet.updatedAt.strftime("%Y-%m-%d %H:%M:%S"),
             "createdBy": createdInfo.fullname if createdInfo else "N/A",
-            "updatedBy": updatedInfo.fullname if updatedInfo else "N/A"
+            "updatedBy": updatedInfo.fullname if updatedInfo else "N/A",
+            "stock": pet.stock
         })
     
     res = make_response(jsonify({
@@ -190,7 +191,8 @@ def getPetDetail(petID):
         "createdAt": pet.createdAt.strftime("%Y-%m-%d %H:%M:%S"),
         "updatedAt": pet.updatedAt.strftime("%Y-%m-%d %H:%M:%S"),
         "createdBy": createdInfo.fullname if createdInfo else "N/A",
-        "updatedBy": updatedInfo.fullname if updatedInfo else "N/A"
+        "updatedBy": updatedInfo.fullname if updatedInfo else "N/A",
+        "stock": pet.stock
     }
 
     res = make_response(jsonify({
@@ -225,6 +227,12 @@ def adminEditPetPost(petID):
     except (ValueError, TypeError):
         price = 0
 
+    try:
+        stock = int(request.form.get('stock') or 0)
+    except (ValueError, TypeError):
+        stock = 0
+    
+
     color = request.form.get('color')
     description = request.form.get('description')
 
@@ -246,6 +254,8 @@ def adminEditPetPost(petID):
     pet.imageList = imageList
     pet.updatedBy = str(g.current_admin.id)
     pet.updatedAt = datetime.now(timezone.utc)
+    pet.color_slug = slugify(color)
+    pet.stock = stock
     pet.save()
 
     return jsonify({
