@@ -55,14 +55,14 @@ export default function AdminPet() {
           </Button>
         </div>
 
-        <PetTable filter={filter} itemsToDelete={itemsToDelete} setItemsToDelete={setItemsToDelete} setTotalPages={setTotalPages} />
-        <Suspense fallback={<div>Loading pagination...</div>}>
-          <PetPagination
-            onFilterChange={handleFilterChange}
-            currentPage={filter.page}
-            totalPages={totalPages}
-          />
+        <Suspense fallback={<div>Loading...</div>}>
+          <PetTable filter={filter} itemsToDelete={itemsToDelete} setItemsToDelete={setItemsToDelete} setTotalPages={setTotalPages} />
         </Suspense>
+        <PetPagination
+          onFilterChange={handleFilterChange}
+          currentPage={filter.page}
+          totalPages={totalPages}
+        />
       </div>
     </>
   )
