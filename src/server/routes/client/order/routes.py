@@ -61,7 +61,6 @@ def create_order():
         pet_id = item.get("id")
         quantity = item.get("quantity", 1)
 
-        
         updated = Pet.objects(
             id=pet_id,
             stock__gte=quantity
@@ -71,15 +70,15 @@ def create_order():
         )
 
         if updated == 0:
+            order.delete()
+
             return jsonify({
                 "code": "error",
-                "message": "Pet cần mua đã hết hàng hoặc số lượng không đủ!",
-                "order_id": str(order.id)
-            })
+                "message": "Pet cần mua đã hết hàng hoặc số lượng không đủ!"
+            }), 400
 
         pet = Pet.objects(id=pet_id).first()
 
-        # 4. Create OrderDetail
         OrderDetail(
             order_id=order.id,
             pet_id=pet_id,
