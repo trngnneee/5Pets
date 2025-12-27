@@ -57,6 +57,7 @@ def create_order():
 
     total = 0
     pet_names = []
+    processed_items = []
     for item in idList:
         pet_id = item.get("id")
         quantity = item.get("quantity", 1)
@@ -70,12 +71,17 @@ def create_order():
         )
 
         if updated == 0:
+            for rollback in processed_items:
+                Pet.objects(id=rollback["id"]).update_one(
+                    inc__stock=rollback["quantity"]
+                )
+
             order.delete()
 
             return jsonify({
                 "code": "error",
                 "message": "Pet cần mua đã hết hàng hoặc số lượng không đủ!"
-            }), 400
+            })
 
         pet = Pet.objects(id=pet_id).first()
 
@@ -88,6 +94,11 @@ def create_order():
 
         total += pet.price * quantity
         pet_names.append(pet.name)
+
+        processed_items.append({
+            "id": pet_id,
+            "quantity": quantity
+        })
 
     # 5. Update total
     order.update(total=total)
