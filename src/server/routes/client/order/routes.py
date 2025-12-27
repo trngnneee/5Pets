@@ -8,7 +8,7 @@ from model.order import Order
 from model.order_detail import OrderDetail
 from model.pet import Pet
 from helper.FlaskMail import send_order_email 
-import datetime
+from datetime import datetime, timezone
 import time
 import hmac
 import hashlib
@@ -33,7 +33,8 @@ def create_order():
     note = data.get("note")
     payment_method = data.get("payment_method")
     idList = data.get("idList")
-
+    #print(idList)
+    
     existCustomer = Customer.objects(email=email).first()
     if not existCustomer:
         newCustomer = Customer(
@@ -55,25 +56,50 @@ def create_order():
     ).save()
 
     total = 0
+    pet_names = []
+    for item in idList:
+        pet_id = item.get("id")
+        quantity = item.get("quantity", 1)
 
-    for pet_id in idList:
-        petDetail = Pet.objects(id=pet_id).first()
-        if not petDetail:
-            continue
+        
+        updated = Pet.objects(
+            id=pet_id,
+            stock__gte=quantity
+        ).update_one(
+            inc__stock=-quantity,
+            set__updatedAt=datetime.now(timezone.utc)
+        )
 
-        total += petDetail.price
+        if updated == 0:
+            return jsonify({
+                "code": "error",
+                "message": "Pet cần mua đã hết hàng hoặc số lượng không đủ!",
+                "order_id": str(order.id)
+            })
 
+        pet = Pet.objects(id=pet_id).first()
+
+        # 4. Create OrderDetail
         OrderDetail(
             order_id=order.id,
             pet_id=pet_id,
-            quantity=1,
-            order_detail_total=petDetail.price
+            quantity=quantity,
+            order_detail_total=pet.price * quantity
         ).save()
 
+        total += pet.price * quantity
+        pet_names.append(pet.name)
+
+    # 5. Update total
     order.update(total=total)
 
-    pet_names = [Pet.objects(id=pid).first().name for pid in idList if Pet.objects(id=pid).first()]
-    send_order_email(email, str(order.id), total, pet_names)
+    # 6. Send email
+    send_order_email(
+        data.get("email"),
+        str(order.id),
+        total,
+        pet_names
+    )
 
     if payment_method == "zalopay":
         order_data = {

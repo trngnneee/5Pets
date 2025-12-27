@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 import mongoengine as me
 
 class Order(me.Document):
@@ -10,7 +10,7 @@ class Order(me.Document):
     payment_method=me.StringField(required=True)
     status=me.StringField(default="pending") 
     updated_by=me.StringField()
-    created_at = me.DateTimeField(default=datetime.datetime.utcnow)
+    created_at = me.DateTimeField(default=lambda: datetime.now(timezone.utc))
     meta = {
         "collection": "order"
     }
