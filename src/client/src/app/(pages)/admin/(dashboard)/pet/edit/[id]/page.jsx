@@ -57,6 +57,7 @@ export default function AdminPetEdit() {
         setGender(promise2.data.gender);
         setPrice(promise2.data.price);
         setColor(promise2.data.color);
+        setStock(promise2.data.stock);
         setDescription(promise2.data.description);
 
         setLoaded(true);
