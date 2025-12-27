@@ -21,7 +21,7 @@ def adminCreatePetPost():
     price = request.form.get('price')
     color = request.form.get('color')
     description = request.form.get('description')
-
+    stock = request.form.get('stock')
     imageList = request.cloudinary_result.get("urls") if request.cloudinary_result and request.cloudinary_result.get("urls") else []
 
     new_pet = Pet(
@@ -36,7 +36,8 @@ def adminCreatePetPost():
         createdBy=str(g.current_admin.id),
         updatedBy=str(g.current_admin.id),
         color_slug=slugify(color),
-        slug=slugify(name)
+        slug=slugify(name),
+        stock=stock,
     )
     new_pet.save()
     
