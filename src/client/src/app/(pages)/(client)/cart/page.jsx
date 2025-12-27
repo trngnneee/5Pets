@@ -176,6 +176,9 @@ export default function CartPage() {
               window.location.href = data.momo.payUrl;
               return "Chuyển đến trang thanh toán Momo...";
             }
+            else {
+              router.push(`/order/success/${data.order_id}`)
+            }
             return data.message
           },
           error: (data) => {
