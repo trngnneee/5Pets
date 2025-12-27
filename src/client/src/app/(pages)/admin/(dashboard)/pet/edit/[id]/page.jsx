@@ -152,6 +152,7 @@ export default function AdminPetEdit() {
     formData.append("price", price);
     formData.append("color", color);
     formData.append("description", description);
+    formData.append("stock", stock);
 
     const existingImages = normalizedList.filter((img) => img.url && !img.file);
     const existingUrls = existingImages.map((img) => img.url);
