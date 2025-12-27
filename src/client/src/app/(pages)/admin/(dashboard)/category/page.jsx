@@ -7,7 +7,7 @@ import { DashboardSearch } from "../components/DashboardSearch";
 import CategoryTable from "./components/CategoryTable";
 import { useRouter } from "next/navigation";
 import { PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import CategoryPagination from "./components/CategoryPagination";
 
 export default function AdminCategory() {
@@ -52,12 +52,14 @@ export default function AdminCategory() {
           </Button>
         </div>
 
-        <CategoryTable
-          filter={filter}
-          itemsToDelete={itemsToDelete}
-          setItemsToDelete={setItemsToDelete}
-          setTotalPages={setTotalPages}
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <CategoryTable
+            filter={filter}
+            itemsToDelete={itemsToDelete}
+            setItemsToDelete={setItemsToDelete}
+            setTotalPages={setTotalPages}
+          />
+        </Suspense>
 
         <CategoryPagination
           onFilterChange={handleFilterChange}
