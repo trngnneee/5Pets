@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { DashboardFilter } from "../components/DashboardFilter/DashboardFilter";
 import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
@@ -56,11 +56,13 @@ export default function AdminPet() {
         </div>
 
         <PetTable filter={filter} itemsToDelete={itemsToDelete} setItemsToDelete={setItemsToDelete} setTotalPages={setTotalPages} />
-        <PetPagination
-          onFilterChange={handleFilterChange}
-          currentPage={filter.page}
-          totalPages={totalPages}
-        />
+        <Suspense fallback={<div>Loading pagination...</div>}>
+          <PetPagination
+            onFilterChange={handleFilterChange}
+            currentPage={filter.page}
+            totalPages={totalPages}
+          />
+        </Suspense>
       </div>
     </>
   )
