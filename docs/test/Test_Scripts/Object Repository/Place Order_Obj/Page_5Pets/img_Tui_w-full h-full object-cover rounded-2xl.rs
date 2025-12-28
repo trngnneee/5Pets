@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>img_Tui_w-full h-full object-cover rounded-2xl</name>
+   <tag></tag>
+   <elementGuidId>4db2c4a0-5e7e-4a7c-9e48-cd034211f2ab</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value></value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//img[contains(@src,'https://res.cloudinary.com/dvxmaiofh/image/upload/v1764427601/anh-cho-pug-mat-xe-.jpg')]</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=link[name=&quot;Chó Pug mặt xệ vàng kim đực và cái mã PX245 Giống: Đực Tuổi: 2 tháng tuổi 14.000.000 VND&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>img</value>
+      <webElementGuid>5cf58d45-89a0-45aa-8aa5-a8315fe986e2</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>w-full h-full object-cover rounded-2xl</value>
+      <webElementGuid>869ea142-4214-4d36-9010-59ea55425cc8</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>src</name>
+      <type>Main</type>
+      <value>https://res.cloudinary.com/dvxmaiofh/image/upload/v1764427601/anh-cho-pug-mat-xe-.jpg</value>
+      <webElementGuid>42250ea2-5487-40be-93de-c5953ad5fe5e</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/div[@class=&quot;flex gap-5 container mx-auto mb-[60px] relative&quot;]/div[2]/div[@class=&quot;grid grid-cols-3 gap-5 mb-5&quot;]/div[@class=&quot;relative p-2 shadow-xl rounded-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer&quot;]/a[1]/div[@class=&quot;overflow-hidden mb-4 w-full h-[250px]&quot;]/img[@class=&quot;w-full h-full object-cover rounded-2xl&quot;]</value>
+      <webElementGuid>1bbc1cb7-0111-43e4-925e-2c302835f8a1</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:img</name>
+      <type>Main</type>
+      <value>//img[contains(@src,'https://res.cloudinary.com/dvxmaiofh/image/upload/v1764427601/anh-cho-pug-mat-xe-.jpg')]</value>
+      <webElementGuid>fe9cf7b5-58df-46fd-ae7f-63a38e9dedce</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//div[2]/a/div/img</value>
+      <webElementGuid>7b12f535-fb86-45b3-a044-4483a30a6f2c</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//img[@src = 'https://res.cloudinary.com/dvxmaiofh/image/upload/v1764427601/anh-cho-pug-mat-xe-.jpg']</value>
+      <webElementGuid>d567dece-d3c4-4ecd-bcce-b7a873a3d226</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>
