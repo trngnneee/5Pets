@@ -45,3 +45,5 @@ WebUI.click(findTestObject('Object Repository/Place Order_Obj/Page_5Pets/button_
 
 WebUI.verifyElementText(findTestObject('Object Repository/Place Order_Obj/Page_5Pets/div_t hng thnh cng'), 'Đặt hàng thành công!')
 
+WebUI.closeBrowser()
+
