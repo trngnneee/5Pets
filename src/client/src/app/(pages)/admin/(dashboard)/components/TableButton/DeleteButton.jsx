@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
 
-export const AdminDeleteButton = ({ api }) => {
+export const AdminDeleteButton = ({ api, itemName }) => {
   const handleDelete = () => {
     const promise = fetch(api, {
       method: "DELETE",
@@ -37,24 +37,28 @@ export const AdminDeleteButton = ({ api }) => {
     })
   }
 
+  const label = itemName ? `Xóa ${itemName}` : "Xóa";
+
   return (
     <>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive">
+          <Button variant="destructive" aria-label={label} title={label}>
             <Trash className="" size={16} aria-hidden="true" />
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
             <div
-              className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+              className="flex size-9 shrink-0 items-center justify-center rounded-full border border-red-200 bg-red-50 text-red-600"
               aria-hidden="true"
             >
-              <CircleAlertIcon className="opacity-80" size={16} />
+              <CircleAlertIcon size={16} />
             </div>
             <AlertDialogHeader>
-              <AlertDialogTitle>Bạn có chắc chắn muốn xóa không?</AlertDialogTitle>
+              <AlertDialogTitle>
+                {itemName ? `Xóa "${itemName}"?` : "Bạn có chắc chắn muốn xóa không?"}
+              </AlertDialogTitle>
               <AlertDialogDescription>
                 Hành động này không thể hoàn tác.
               </AlertDialogDescription>
@@ -62,7 +66,7 @@ export const AdminDeleteButton = ({ api }) => {
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Xác nhận</AlertDialogAction>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-white hover:bg-destructive/90">Xác nhận</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

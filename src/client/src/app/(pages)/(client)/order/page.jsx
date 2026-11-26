@@ -1,129 +1,176 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { orderStatusVariable } from "@/config/variable";
+import { Skeleton } from "@/components/ui/skeleton";
+import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 import { clientOrderList } from "@/lib/clientAPI/order";
-import { useEffect, useState } from "react";
+import { Loader2, PackageSearch } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function OrderPage() {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [searched, setSearched] = useState(false);
   const [orderList, setOrderList] = useState([]);
-  const handleSearch = async () => {
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    const value = email.trim();
+    if (!value) {
+      setError("Vui lòng nhập email đã dùng khi đặt hàng.");
+      return;
+    }
+    if (!EMAIL_REGEX.test(value)) {
+      setError("Email chưa đúng định dạng, ví dụ: ban@gmail.com");
+      return;
+    }
+    setError("");
     setLoading(true);
-    const promise = clientOrderList({ email: email });
+
+    const promise = clientOrderList({ email: value });
     toast.promise(promise, {
       loading: "Đang tìm kiếm đơn hàng...",
       success: (data) => {
-        if (data.code == "success") {
-          setOrderList(data.order_list);
-          setLoading(false);
-          return data.message;
-        }
+        setOrderList(data.order_list || []);
+        return data.message;
       },
       error: (data) => {
         setOrderList([]);
-        setLoading(false);
         return data.message;
       },
-    })
+    });
+
+    try {
+      await promise;
+    } catch {
+      // lỗi đã được hiển thị qua toast
+    } finally {
+      setLoading(false);
+      setSearched(true);
+    }
   }
 
   return (
     <>
-      <div className="container mx-auto flex gap-10 my-5">
-        <div className="w-1/3">
-          <div className="text-[24px] font-bold text-[var(--main-color)]">Tìm kiếm đơn hàng</div>
-          <div className="text-gray-400 text-[12px]">Nhập email để tìm kiếm</div>
-          <div className="mt-10">
+      <div className="container mx-auto flex max-lg:flex-col gap-10 max-lg:gap-6 my-5">
+        <div className="w-1/3 max-lg:w-full shrink-0">
+          <h1 className="text-[24px] font-bold text-[var(--main-color)]">Tìm kiếm đơn hàng</h1>
+          <p className="text-[#667479] text-sm">Nhập email bạn đã dùng khi đặt hàng để xem trạng thái đơn.</p>
+          <form className="mt-10 max-lg:mt-6" onSubmit={handleSearch} noValidate>
             <div className="mb-6 *:not-first:mt-2">
-              <Label htmlFor="email" className="text-sm font-medium text-[var(--main-color)] ">Email*</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-[var(--main-color)]">Email <span className="text-destructive" aria-hidden="true">*</span></Label>
               <Input
                 type="email"
+                inputMode="email"
+                autoComplete="email"
                 id="email"
                 name="email"
                 placeholder="example@gmail.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "order-email-error" : undefined}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (error) setError("");
+                }}
               />
+              {error && (
+                <p id="order-email-error" role="alert" className="text-xs text-destructive">{error}</p>
+              )}
             </div>
             <Button
-              className={"w-full bg-[var(--main-color)] hover:bg-[var(--main-hover)]"}
-              onClick={handleSearch}
+              type="submit"
+              className={"w-full bg-[var(--main-color)] hover:bg-[var(--main-hover)] max-md:h-11"}
               disabled={loading}
+              aria-busy={loading}
             >
-              Tìm kiếm
+              {loading && <Loader2 className="animate-spin" aria-hidden="true" />}
+              {loading ? "Đang tìm kiếm..." : "Tìm kiếm"}
             </Button>
-          </div>
+          </form>
         </div>
-        <div className="bg-white border border-gray-100 w-full rounded-[20px] shadow-xl">
-          <table className="min-w-full text-sm text-gray-700">
-            <thead className="bg-gray-50 text-gray-600 font-medium border-b">
-              <tr>
-                <th className="p-3 text-left">Tên khách hàng</th>
-                <th className="p-3 text-left text-nowrap">Số điện thoại</th>
-                <th className="p-3 text-left">Email</th>
-                <th className="p-3 text-left">Địa chỉ</th>
-                <th className="p-3 text-left">Trạng thái</th>
-                <th className="p-3 text-center">Chi tiết</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orderList.length > 0 ? orderList.map((item, index) => (
-                <tr
-                  key={item.order_id}
-                  className="border-b hover:bg-gray-50 transition-colors"
-                >
-                  <td className="p-3 text-nowrap">{item.customer.fullname}</td>
-                  <td className="p-3">{item.phone}</td>
-                  <td className="p-3">{item.customer.email}</td>
-                  <td className="p-3">{item.address}</td>
-                  <td className="p-3">
-                    {item.status == "pending" ? (
-                      <Badge variant={"ghost"}>{orderStatusVariable.find((i) => i.value == item.status)?.label}</Badge>
-                    ) : (
-                      item.status == "shipping" ? (
-                        <Badge variant={"destructive"}>{orderStatusVariable.find((i) => i.value == item.status)?.label}</Badge>
-                      ) : (
-                        item.status == "delivered" && (
-                          <Badge variant={""}>{orderStatusVariable.find((i) => i.value == item.status)?.label}</Badge>
-                        )
-                      )
-                    )}
-                  </td>
-                  <td className="p-3">
-                    {item.order_details.map((detail, idx) => (
-                      <div key={idx} className="mb-2 flex items-center gap-2">
-                        <div className="w-[30px] h-[30px] overflow-hidden">
-                          <img
-                            src={detail.imageList[0]}
-                            className="w-full h-full object-cover"
-                          />
+        <div className="bg-white border border-gray-100 w-full min-w-0 rounded-[20px] shadow-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-gray-700">
+              <caption className="sr-only">Danh sách đơn hàng</caption>
+              <thead className="bg-gray-50 text-gray-600 font-medium border-b">
+                <tr>
+                  <th scope="col" className="p-3 text-left text-nowrap">Tên khách hàng</th>
+                  <th scope="col" className="p-3 text-left text-nowrap">Số điện thoại</th>
+                  <th scope="col" className="p-3 text-left">Email</th>
+                  <th scope="col" className="p-3 text-left">Địa chỉ</th>
+                  <th scope="col" className="p-3 text-left text-nowrap">Trạng thái</th>
+                  <th scope="col" className="p-3 text-left">Chi tiết</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  [...Array(3)].map((_, index) => (
+                    <tr key={index} className="border-b" aria-hidden="true">
+                      {[...Array(6)].map((__, cellIndex) => (
+                        <td key={cellIndex} className="p-3"><Skeleton className="h-4 w-full min-w-16" /></td>
+                      ))}
+                    </tr>
+                  ))
+                ) : orderList.length > 0 ? orderList.map((item) => (
+                  <tr
+                    key={item.order_id}
+                    className="border-b hover:bg-gray-50 transition-colors align-top"
+                  >
+                    <td className="p-3 text-nowrap">{item.customer.fullname}</td>
+                    <td className="p-3 tabular-nums">{item.phone}</td>
+                    <td className="p-3 break-all min-w-40">{item.customer.email}</td>
+                    <td className="p-3 min-w-48">{item.address}</td>
+                    <td className="p-3">
+                      <OrderStatusBadge status={item.status} />
+                    </td>
+                    <td className="p-3 min-w-56">
+                      <div className="text-xs text-[#667479] mb-2 break-all">Mã đơn: <span className="font-medium text-[#00171F]">{item.order_id}</span></div>
+                      {item.order_details.map((detail, idx) => (
+                        <div key={idx} className="mb-2 flex items-center gap-2">
+                          <div className="w-[36px] h-[36px] shrink-0 overflow-hidden rounded-md bg-muted">
+                            <img
+                              src={detail.imageList?.[0]}
+                              alt={detail.name}
+                              loading="lazy"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="text-xs">
+                            <div className="font-medium">{detail.name}</div>
+                            <div className="text-[#667479] tabular-nums">Số lượng: {detail.quantity} · Giá: {parseInt(detail.price).toLocaleString("vi-VN")} VND</div>
+                          </div>
                         </div>
-                        <div className="text-[10px]">
-                          <div className="font-medium">{detail.name}</div>
-                          <div>Số lượng: {detail.quantity}</div>
-                          <div>Giá: {parseInt(detail.price).toLocaleString("vi-VN")}</div>
+                      ))}
+                      <div className="font-bold text-sm tabular-nums">Tổng tiền: {parseInt(item.total).toLocaleString("vi-VN")} VND</div>
+                    </td>
+                  </tr>
+                )) : (
+                  <tr>
+                    <td colSpan={6} className="p-3">
+                      <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
+                        <PackageSearch className="size-8 text-[#99A2A5]" aria-hidden="true" />
+                        <div className="font-medium text-[#00171F]">
+                          {searched ? "Không tìm thấy đơn hàng nào" : "Chưa có kết quả"}
+                        </div>
+                        <div className="text-sm text-[#667479]">
+                          {searched
+                            ? "Kiểm tra lại email bạn đã nhập khi đặt hàng."
+                            : "Nhập email ở bên trái để tra cứu đơn hàng của bạn."}
                         </div>
                       </div>
-                    ))}
-                    <div className="font-bold text-sm">Tổng tiền: {parseInt(item.total).toLocaleString("vi-VN")}</div>
-                  </td>
-                </tr>
-              )) : (
-                <tr>
-                  <td colSpan={6} className="p-3 text-center text-gray-400">
-                    Không tìm thấy đơn hàng nào
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </>

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export const DetailInformationSkeleton = () => {
   return (
-    <div className="flex flex-col gap-[18px] w-1/2 animate-pulse">
+    <div className="flex flex-col gap-[18px] w-1/2 max-lg:w-full animate-pulse" aria-hidden="true">
       <Skeleton className="h-5 w-[200px] rounded-md" />
 
       <div className="flex flex-col gap-1.5">

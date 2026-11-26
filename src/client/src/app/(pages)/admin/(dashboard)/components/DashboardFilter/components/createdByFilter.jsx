@@ -4,13 +4,19 @@ import { ChevronDownIcon } from "lucide-react"
 
 export const CreatedByFilter = ({ createdBy, setCreatedBy, show=true, adminList }) => {
   if (!show) return null;
-  
+
+  const label = adminList.find((item) => item.id == createdBy)?.fullname || "-- Người tạo --";
+
   return (
     <div className="flex flex-1 items-center gap-2 border-r-[0.6px] border-r-[#D5D5D5] w-full justify-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="flex items-center gap-2 p-4 bg-white hover:bg-white text-[var(--main-color)] rounded-none shadow-none">
-            {adminList.find((item) => item.id == createdBy)?.fullname || "-- Người tạo --"}
+          <Button
+            type="button"
+            aria-label={`Lọc theo người tạo: ${label}`}
+            className="flex items-center gap-2 p-4 bg-white hover:bg-[#F5F6FA] text-[var(--main-color)] rounded-none shadow-none"
+          >
+            {label}
             <ChevronDownIcon
               className="-me-1 opacity-60"
               size={16}

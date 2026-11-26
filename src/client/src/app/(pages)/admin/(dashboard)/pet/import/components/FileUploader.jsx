@@ -1,6 +1,6 @@
 "use client"
 
-import { AlertCircleIcon, ImageIcon, UploadIcon, XIcon } from "lucide-react"
+import { AlertCircleIcon, FileTextIcon, UploadIcon, XIcon } from "lucide-react"
 import { useFileUpload } from "@/hooks/use-file-upload"
 import { Button } from "@/components/ui/button"
 import { useEffect } from "react"
@@ -50,13 +50,13 @@ export const FileUploader = ({
         <input
           {...getInputProps()}
           className="sr-only"
-          aria-label="Upload image file"
+          aria-label="Tải file dữ liệu lên"
         />
         {files.length > 0 ? (
           <div className="flex w-full flex-col gap-3">
             <div className="flex items-center justify-between gap-2">
               <h3 className="truncate text-sm font-medium">
-                File ảnh đã upload ({files.length})
+                File đã chọn ({files.length})
               </h3>
               <Button
                 type="button"
@@ -69,7 +69,7 @@ export const FileUploader = ({
                   className="-ms-0.5 size-3.5 opacity-60"
                   aria-hidden="true"
                 />
-                Upload
+                Chọn lại
               </Button>
             </div>
 
@@ -77,18 +77,17 @@ export const FileUploader = ({
               {files.map((file) => (
                 <div
                   key={file.id}
-                  className="relative aspect-square rounded-md bg-accent"
+                  className="relative flex aspect-square flex-col items-center justify-center gap-2 rounded-md bg-accent p-2 text-center"
                 >
-                  <img
-                    src={file.preview}
-                    alt={file.file.name}
-                    className="size-full rounded-[inherit] object-cover"
-                  />
+                  <FileTextIcon className="size-6 text-[var(--main-color)]" aria-hidden="true" />
+                  <span className="w-full truncate text-xs font-medium" title={file.file?.name}>{file.file?.name}</span>
                   <Button
+                    type="button"
                     onClick={() => removeFile(file.id)}
                     size="icon"
                     className="absolute -top-2 -right-2 size-6 rounded-full border-2 border-background shadow-none focus-visible:border-background"
-                    aria-label="Remove image"
+                    aria-label={`Xóa file ${file.file?.name || ""}`}
+                    title="Xóa file"
                   >
                     <XIcon className="size-3.5" />
                   </Button>
@@ -102,11 +101,11 @@ export const FileUploader = ({
               className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border bg-background"
               aria-hidden="true"
             >
-              <ImageIcon className="size-4 opacity-60" />
+              <FileTextIcon className="size-4 opacity-60" />
             </div>
             <p className="mb-1.5 text-sm font-medium">Kéo file vào khu vực này để tải lên</p>
             <p className="text-xs text-muted-foreground">
-              CSV, XLSX, XLS or JSON (max {maxSizeMB}MB)
+              CSV, XLSX, XLS hoặc JSON (tối đa {maxSizeMB}MB)
             </p>
             <Button type="button" variant="outline" className="mt-4" onClick={openFileDialog}>
               <UploadIcon className="-ms-1 opacity-60" aria-hidden="true" />

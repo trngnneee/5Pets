@@ -18,10 +18,14 @@ export const SectionBreadcrumb = ({ id }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const promise = await categoryBreadcrumbs(id);
-      if (promise.code == "success")
-      {
-        setBreadcrumbs(promise.data);
+      try {
+        const promise = await categoryBreadcrumbs(id);
+        if (promise.code == "success")
+        {
+          setBreadcrumbs(promise.data);
+        }
+      } catch {
+        setBreadcrumbs([]);
       }
     }
     fetchData();
@@ -29,7 +33,7 @@ export const SectionBreadcrumb = ({ id }) => {
 
   return (
     <div className="container mx-auto my-[9px]">
-      <Breadcrumb>
+      <Breadcrumb aria-label="Đường dẫn">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/">

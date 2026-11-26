@@ -38,7 +38,7 @@ export default function AdminCategory() {
           showCategory={false}
           onFilterChange={handleFilterChange}
         />
-        <div className="mt-[15px] flex items-center gap-5">
+        <div className="mt-[15px] flex flex-wrap items-center gap-5">
           <DashboardMultipleApply
             itemsToDelete={itemsToDelete}
             api={`${process.env.NEXT_PUBLIC_API_URL}/admin/category/multi-delete`}

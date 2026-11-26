@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronLeft } from "lucide-react";
 import { ImageUploader } from "../../components/ImageUploader";
 import Link from "next/link";
 import { buildCategoryTree } from "@/helper/renderCategory";
@@ -125,6 +125,10 @@ export default function AdminPetCreate() {
 
   return (
     <>
+      <Link href="/admin/pet" className="mb-2 inline-flex items-center gap-1 text-sm font-medium text-[var(--main-color)] hover:underline">
+        <ChevronLeft className="size-4" aria-hidden="true" />
+        Quay lại danh sách
+      </Link>
       <DashboardTitle title="Tạo thú cưng" />
       <form onSubmit={handleSubmit} id="categoryCreateForm" className="bg-white w-full p-12.5 rounded-[14px] mt-[30px] border border-[#B9B9B9]">
         <div className="flex gap-[30px]">
@@ -133,12 +137,13 @@ export default function AdminPetCreate() {
               htmlFor="name"
               className="text-sm font-semibold text-[#606060]"
             >
-              Tên thú cưng
+              Tên thú cưng<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
             </Label>
             <Input
               placeholder="Thú cưng 1..."
               id="name"
               name="name"
+              aria-required="true"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -146,17 +151,19 @@ export default function AdminPetCreate() {
 
           <div className="w-full flex flex-col gap-3">
             <Label
+              id="category-label"
               className="text-sm font-semibold text-[#606060]"
             >
-              Danh mục
+              Danh mục<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
             </Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   type="button"
+                  aria-labelledby="category-label category-value"
                   className="w-full flex items-center justify-between rounded-md border border-input bg-background text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  <span>{(categoryList.find((item) => item.id == category)?.name) || "Chọn danh mục"}</span>
+                  <span id="category-value">{(categoryList.find((item) => item.id == category)?.name) || "Chọn danh mục"}</span>
                   <ChevronDown className="w-4 h-4 opacity-70" />
                 </Button>
               </DropdownMenuTrigger>
@@ -169,6 +176,9 @@ export default function AdminPetCreate() {
           </div>
         </div>
         <div className="flex flex-col gap-2 mt-[30px]">
+          <Label className="text-sm font-semibold text-[#606060]">
+            Hình ảnh (tối đa 7 ảnh)<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
+          </Label>
           <ImageUploader
             value={imageList}
             onChange={setImageList}
@@ -181,30 +191,34 @@ export default function AdminPetCreate() {
               htmlFor="age"
               className="text-sm font-semibold text-[#606060]"
             >
-              Tuổi theo tháng
+              Tuổi theo tháng<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
             </Label>
             <Input
               placeholder="1"
               id="age"
               name="age"
               type="number"
+              min={0}
+              aria-required="true"
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
           </div>
           <div className="w-full flex flex-col gap-3">
             <Label
+              id="gender-label"
               className="text-sm font-semibold text-[#606060]"
             >
-              Giống
+              Giống<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
             </Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   type="button"
+                  aria-labelledby="gender-label gender-value"
                   className="w-full flex items-center justify-between rounded-md border border-input bg-background text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  <span>{(genderList.find((item) => item.value == gender)?.label) || "Chọn giống"}</span>
+                  <span id="gender-value">{(genderList.find((item) => item.value == gender)?.label) || "Chọn giống"}</span>
                   <ChevronDown className="w-4 h-4 opacity-70" />
                 </Button>
               </DropdownMenuTrigger>
@@ -221,12 +235,14 @@ export default function AdminPetCreate() {
               htmlFor="price"
               className="text-sm font-semibold text-[#606060]"
             >
-              Giá
+              Giá<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
             </Label>
             <Input
               placeholder="100.000"
               id="price"
               name="price"
+              inputMode="numeric"
+              aria-required="true"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
             />
@@ -236,12 +252,13 @@ export default function AdminPetCreate() {
               htmlFor="color"
               className="text-sm font-semibold text-[#606060]"
             >
-              Màu sắc
+              Màu sắc<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
             </Label>
             <Input
               placeholder="Trắng"
               id="color"
               name="color"
+              aria-required="true"
               value={color}
               onChange={(e) => setColor(e.target.value)}
             />
@@ -257,6 +274,7 @@ export default function AdminPetCreate() {
               placeholder="1"
               id="stock"
               name="stock"
+              inputMode="numeric"
               value={stock}
               onChange={(e) => setStock(e.target.value)}
             />
@@ -273,7 +291,7 @@ export default function AdminPetCreate() {
           <Textarea id="desc" placeholder="Mô tả ngắn..." value={description} onChange={(e) => setDescription(e.target.value)} />
         </div>
         <div className="flex flex-col items-center mt-[30px]">
-          <Button disabled={submit} className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] w-1/4 font-bold text-lg">Tạo thú cưng</Button>
+          <Button disabled={submit} className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] min-w-[220px] px-8 font-bold text-lg">Tạo thú cưng</Button>
           <Link href="/admin/pet" className="text-[var(--main-color)] hover:text-[var(--main-hover)] hover:underline mt-5">Quay trở lại danh sách</Link>
         </div>
       </form>

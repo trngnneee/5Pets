@@ -4,17 +4,28 @@ import { Calendar } from "@/components/ui/calendar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { ChevronDownIcon } from "lucide-react"
+import { format } from "date-fns"
+
+const formatDay = (value) => format(value, "dd/MM/yyyy");
 
 export const DateFilter = ({ date, setDate }) => {
+  let label = "-- Chọn khoảng ngày --";
+  if (date?.from && date?.to) {
+    label = `${formatDay(date.from)} - ${formatDay(date.to)}`;
+  } else if (date?.from) {
+    label = `Từ ${formatDay(date.from)}`;
+  }
+
   return (
     <div className="flex flex-1 items-center gap-2 border-r-[0.6px] border-r-[#D5D5D5] w-full justify-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="flex items-center gap-2 p-4 bg-white hover:bg-white text-[var(--main-color)] rounded-none shadow-none my-0">
-            {date.from && date.to
-              ? `${date.from.toLocaleDateString()} - ${date.to.toLocaleDateString()}`
-              : "-- Chọn khoảng ngày --"
-            }
+          <Button
+            type="button"
+            aria-label={`Lọc theo ngày: ${label}`}
+            className="flex items-center gap-2 p-4 bg-white hover:bg-[#F5F6FA] text-[var(--main-color)] rounded-none shadow-none my-0 tabular-nums"
+          >
+            {label}
             <ChevronDownIcon
               className="-me-1 opacity-60"
               size={16}
@@ -26,7 +37,8 @@ export const DateFilter = ({ date, setDate }) => {
           <Calendar
             mode="range"
             selected={date}
-            onSelect={setDate}
+            // Bỏ chọn sẽ trả về undefined, giữ lại object rỗng để tránh lỗi
+            onSelect={(range) => setDate(range || { from: null, to: null })}
             numberOfMonths={2}
             pagedNavigation
             showOutsideDays={false}

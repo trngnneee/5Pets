@@ -9,9 +9,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <body>
-        <Toaster />
+        <Toaster position="top-right" richColors closeButton />
         <AOSConfig />
         {children}
       </body>

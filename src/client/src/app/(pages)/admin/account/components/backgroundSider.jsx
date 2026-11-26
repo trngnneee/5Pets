@@ -1,19 +1,18 @@
-import Link from "next/link";
-
 export const BackgroundSider = () => {
   return (
-    <div className="w-1/2 h-full relative">
+    // Ẩn ảnh nền trên màn hình nhỏ để form có đủ chỗ
+    <div className="hidden lg:block w-1/2 relative" aria-hidden="true">
       <img
         src="/adminAccountBg.png"
-        alt="Admin background"
-        className="w-full h-full object-cover rounded-bl-[100px]"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover rounded-bl-[100px]"
       />
 
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-[60%]">
         <div className="w-[400px] h-auto">
           <img
             src="/logo.png"
-            alt="Logo"
+            alt=""
             className="w-full h-full object-contain"
           />
         </div>

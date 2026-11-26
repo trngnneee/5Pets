@@ -1,0 +1,82 @@
+# Render Blueprint cho 5Pets — CHỈ là bản kế hoạch, chưa được apply.
+# Hướng dẫn đầy đủ: docs/deploy/RENDER_DEPLOY.md
+#
+# Kiến trúc:
+#   Trình duyệt ──> 5pets-web (Next.js) ──/api/*──> 5pets-api (Flask + AI) ──> MongoDB Atlas
+#   Frontend proxy /api/* sang backend để cookie đăng nhập admin là first-party.
+
+services:
+  # ---------- Backend: Flask + chatbot AI ----------
+  - type: web
+    name: 5pets-api
+    runtime: python
+    region: singapore
+    # 1 CPU / 2 GB. torch + sentence-transformers cần > 512 MB RAM, gói free/starter dễ bị OOM.
+    plan: standard
+    rootDir: src/server
+    buildCommand: >-
+      pip install --upgrade pip &&
+      pip install torch --index-url https://download.pytorch.org/whl/cpu &&
+      pip install -r requirements.render.txt &&
+      python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+    # --threads 4: chatbot gọi ngược lại chính API (127.0.0.1:5000/order/list), 1 thread sẽ bị treo.
+    # --timeout 180: worker cần thời gian load model + build index lúc khởi động.
+    startCommand: gunicorn main:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 180
+    autoDeployTrigger: "off"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      # ai/consultant.py gọi cứng http://127.0.0.1:5000 nên service phải lắng nghe đúng cổng 5000
+      - key: PORT
+        value: 5000
+      # Cache model HuggingFace trong thư mục project để dùng lại bản tải lúc build
+      - key: HF_HOME
+        value: .cache/huggingface
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: MAIL_SERVER
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USE_TLS
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_DEFAULT_SENDER
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      # URL public của chính API (vd: https://5pets-api.onrender.com) — dùng cho callback MoMo/ZaloPay
+      - key: NGROK_URL
+        sync: false
+
+  # ---------- Frontend: Next.js ----------
+  - type: web
+    name: 5pets-web
+    runtime: node
+    region: singapore
+    # Có thể đổi sang free (ngủ sau 15 phút không có truy cập, mở lại mất ~1 phút)
+    plan: starter
+    rootDir: src/client
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    autoDeployTrigger: "off"
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      # Được nhúng vào bundle lúc build: đổi giá trị thì phải build lại
+      - key: NEXT_PUBLIC_API_URL
+        value: /api
+      # URL public của 5pets-api (vd: https://5pets-api.onrender.com), dùng cho rewrite /api/* trong next.config.mjs
+      - key: API_PROXY_TARGET
+        sync: false

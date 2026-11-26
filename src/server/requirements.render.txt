@@ -1,0 +1,18 @@
+# Bản rút gọn của requirements.txt chỉ dùng khi deploy (Render).
+# Chỉ giữ các thư viện server thực sự import; bỏ jupyter/opencv/matplotlib/torchvision/...
+# torch (bản CPU) được cài riêng trong buildCommand của render.yaml để không kéo bản CUDA ~GB.
+Flask
+mongoengine
+python-dotenv
+bcrypt
+flask-cors
+flask-jwt-extended
+Flask-Mail
+cloudinary
+python-slugify
+numpy
+requests
+sentence-transformers
+faiss-cpu
+google-genai
+gunicorn
