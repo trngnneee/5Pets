@@ -36,9 +36,19 @@ export const DashboardFilter = ({ showCreatedBy = true, showCategory = true, onF
   useEffect(() => {
     if (onFilterChange)
     {
-      onFilterChange({ createdBy, date, category });
+      // Giữ nguyên từ khóa tìm kiếm, chỉ cập nhật bộ lọc và quay về trang 1
+      onFilterChange((prev) => {
+        const unchanged =
+          prev.createdBy === createdBy &&
+          prev.category === category &&
+          (prev.date?.from ?? null) === (date?.from ?? null) &&
+          (prev.date?.to ?? null) === (date?.to ?? null);
+        return unchanged ? prev : { ...prev, createdBy, date, category, page: 1 };
+      });
     }
   }, [createdBy, date, category])
+
+  const hasActiveFilter = Boolean(createdBy || category || date?.from || date?.to);
 
   const handleClearFilter = () => {
     setCreatedBy("");
@@ -47,9 +57,9 @@ export const DashboardFilter = ({ showCreatedBy = true, showCategory = true, onF
   }
 
   return (
-    <div className="bg-white rounded-[14px] border-[0.6px] border-[#D5D5D5] flex items-stretch overflow-hidden text-sm font-medium w-3/4">
+    <div className="bg-white rounded-[14px] border-[0.6px] border-[#D5D5D5] flex items-stretch overflow-hidden text-sm font-medium w-3/4 max-xl:w-full">
       <div className="flex flex-1 items-center gap-2 p-2 border-r-[0.6px] border-l-[#D5D5D5] w-[50px] justify-center text-[var(--main-color)]">
-        <Funnel />
+        <Funnel aria-hidden="true" />
         <div className="">Bộ lọc</div>
       </div>
 
@@ -75,7 +85,12 @@ export const DashboardFilter = ({ showCreatedBy = true, showCategory = true, onF
       />
 
       <div className="flex flex-1 items-center gap-2 w-[200px] justify-center">
-        <Button onClick={handleClearFilter} className="flex items-center gap-2 p-4 bg-white hover:bg-white text-red-400 rounded-none shadow-none cursor-pointer font-semibold">
+        <Button
+          type="button"
+          onClick={handleClearFilter}
+          disabled={!hasActiveFilter}
+          className="flex items-center gap-2 p-4 bg-white hover:bg-red-50 text-red-600 rounded-none shadow-none font-semibold"
+        >
           <div>Xóa bộ lọc</div>
         </Button>
       </div>

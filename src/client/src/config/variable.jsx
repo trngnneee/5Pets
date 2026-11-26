@@ -42,3 +42,6 @@ export const orderStatusVariable = [
     value: "delivered"
   }
 ]
+
+// Danh mục gốc dùng cho các nút "Xem thêm" / "Khám phá"
+export const featuredCategoryId = "692b001e8b153579ab1b5bf1";

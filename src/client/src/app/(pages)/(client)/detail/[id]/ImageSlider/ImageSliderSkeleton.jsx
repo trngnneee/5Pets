@@ -4,8 +4,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export const ImageSliderSkeleton = () => {
   return (
-    <div className="w-1/2 animate-pulse flex flex-col gap-2">
-      <Skeleton className="w-full h-[476px] rounded-[10px]" />
+    <div className="w-1/2 max-lg:w-full animate-pulse flex flex-col gap-2" aria-hidden="true">
+      <Skeleton className="w-full h-[476px] max-md:h-[320px] rounded-[10px]" />
 
       <Skeleton className="h-5 w-[120px] rounded-md mt-2 mx-auto" />
 

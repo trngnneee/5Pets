@@ -3,8 +3,8 @@ import { Dot } from "lucide-react";
 
 export const ItemCardSkeleton = () => {
   return (
-    <div className="p-2 shadow-xl rounded-2xl animate-pulse w-full box-border">
-      <div className="overflow-hidden mb-4 h-[250px] w-[300px] rounded-2xl">
+    <div className="p-2 shadow-xl rounded-2xl animate-pulse w-full box-border" aria-hidden="true">
+      <div className="overflow-hidden mb-4 h-[250px] w-full rounded-2xl">
         <Skeleton className="w-full h-full" />
       </div>
 

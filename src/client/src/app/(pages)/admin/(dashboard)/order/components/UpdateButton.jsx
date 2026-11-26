@@ -1,18 +1,20 @@
 "use client"
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { OrderStatusBadge } from "@/components/OrderStatusBadge"
 import { orderStatusVariable } from "@/config/variable"
 import { adminOrderUpdate } from "@/lib/adminAPI/order"
 import { Pen } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
-export const UpdateButton = ({ id }) => {
-  const [status, setStatus] = useState("");
-  
+export const UpdateButton = ({ id, currentStatus = "" }) => {
+  const [status, setStatus] = useState(currentStatus);
+  const selectId = `order-status-${id}`;
+
   const handleUpdateStatus = () => {
     if (status == "")
     {
@@ -38,48 +40,58 @@ export const UpdateButton = ({ id }) => {
         }
         else return Promise.reject(data.message);
       },
-      error: (err) => `Cập nhật trạng thái đơn hàng thất bại: ${err.message}`
+      error: (err) => `Cập nhật trạng thái đơn hàng thất bại: ${err?.message || err}`
     })
   }
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button className="bg-[var(--main-color)] hover:bg-[var(--main-hover)]">
-            <Pen />
+      <AlertDialog
+        onOpenChange={(open) => {
+          // Mỗi lần mở lại, chọn sẵn trạng thái hiện tại
+          if (open) setStatus(currentStatus);
+        }}
+      >
+        <AlertDialogTrigger asChild>
+          <Button
+            aria-label="Cập nhật trạng thái"
+            title="Cập nhật trạng thái"
+            className="bg-[var(--main-color)] hover:bg-[var(--main-hover)]"
+          >
+            <Pen aria-hidden="true" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onSelect={e => e.preventDefault()}>
-            <AlertDialog>
-              <AlertDialogTrigger>
-                Thay đổi trạng thái đơn hàng
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Thay đổi trạng thái đơn hàng</AlertDialogTitle>
-                </AlertDialogHeader>
-                <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn trạng thái cần cập nhật"/>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {orderStatusVariable.map((item) => (
-                      <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Hủy</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleUpdateStatus}>Xác nhận</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </DropdownMenuItem>
-          {/* <DropdownMenuItem>Thay đổi thông tin khách hàng</DropdownMenuItem> */}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Thay đổi trạng thái đơn hàng</AlertDialogTitle>
+            <AlertDialogDescription>
+              Trạng thái hiện tại: <OrderStatusBadge status={currentStatus} className="align-middle" />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor={selectId}>Trạng thái mới</Label>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger id={selectId} className="w-full">
+                <SelectValue placeholder="Chọn trạng thái cần cập nhật"/>
+              </SelectTrigger>
+              <SelectContent>
+                {orderStatusVariable.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleUpdateStatus}
+              disabled={!status || status === currentStatus}
+            >
+              Xác nhận
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

@@ -2,15 +2,17 @@
 
 import { Button } from "@/components/ui/button"
 import { Pen } from "lucide-react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 
-export const AdminEditButton = ({ link }) => {
-  const router = useRouter();
-  
+export const AdminEditButton = ({ link, itemName }) => {
+  const label = itemName ? `Chỉnh sửa ${itemName}` : "Chỉnh sửa";
+
   return (
     <>
-      <Button onClick={() => router.push(link)} className="bg-[var(--main-color)] hover:bg-[var(--main-hover)]">
-        <Pen/>
+      <Button asChild className="bg-[var(--main-color)] hover:bg-[var(--main-hover)]">
+        <Link href={link} aria-label={label} title={label}>
+          <Pen aria-hidden="true" />
+        </Link>
       </Button>
     </>
   )

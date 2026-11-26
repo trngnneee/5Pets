@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ImageUploader } from "../../../components/ImageUploader";
 import { useEffect, useState } from "react";
@@ -109,6 +109,10 @@ export default function AdminCategoryEdit() {
 
   return (
     <>
+      <Link href="/admin/category" className="mb-2 inline-flex items-center gap-1 text-sm font-medium text-[var(--main-color)] hover:underline">
+        <ChevronLeft className="size-4" aria-hidden="true" />
+        Quay lại danh sách
+      </Link>
       <DashboardTitle title="Chỉnh sửa danh mục" />
       <form onSubmit={handleSubmit} id="categoryCreateForm" className="bg-white w-full p-12.5 rounded-[14px] mt-[30px] border border-[#B9B9B9]">
         <div className="flex gap-[30px]">
@@ -117,12 +121,13 @@ export default function AdminCategoryEdit() {
               htmlFor="name"
               className="text-sm font-semibold text-[#606060]"
             >
-              Tên danh mục
+              Tên danh mục<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
             </Label>
             <Input
               placeholder="Danh mục 1..."
               id="name"
               name="name"
+              aria-required="true"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -153,6 +158,9 @@ export default function AdminCategoryEdit() {
           </div>
         </div>
         <div className="flex flex-col gap-2 mt-[30px]">
+          <Label className="text-sm font-semibold text-[#606060]">
+            Ảnh đại diện<span className="ml-0.5 text-red-500" aria-hidden="true">*</span>
+          </Label>
           {isLoaded && (
             <ImageUploader
               value={imageList.length > 0 ? imageList : []}
@@ -162,7 +170,7 @@ export default function AdminCategoryEdit() {
           )}
         </div>
         <div className="flex flex-col items-center mt-[30px]">
-          <Button disabled={submit} className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] w-1/4 font-bold text-lg">Chỉnh sửa danh mục</Button>
+          <Button disabled={submit} className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] min-w-[220px] px-8 font-bold text-lg">Chỉnh sửa danh mục</Button>
           <Link href="/admin/category" className="text-[var(--main-color)] hover:text-[var(--main-hover)] hover:underline mt-5">Quay trở lại danh sách</Link>
         </div>
       </form>

@@ -50,13 +50,13 @@ export const ImageUploader = ({
         <input
           {...getInputProps()}
           className="sr-only"
-          aria-label="Upload image file"
+          aria-label="Tải ảnh lên"
         />
         {files.length > 0 ? (
           <div className="flex w-full flex-col gap-3">
             <div className="flex items-center justify-between gap-2">
               <h3 className="truncate text-sm font-medium">
-                File ảnh đã upload ({files.length})
+                Ảnh đã chọn ({files.length}/{maxFiles})
               </h3>
               <Button
                 type="button"
@@ -69,7 +69,7 @@ export const ImageUploader = ({
                   className="-ms-0.5 size-3.5 opacity-60"
                   aria-hidden="true"
                 />
-                Upload
+                Thêm ảnh
               </Button>
             </div>
 
@@ -81,14 +81,16 @@ export const ImageUploader = ({
                 >
                   <img
                     src={file.preview}
-                    alt={file.file.name}
+                    alt={file.file?.name || "Ảnh đã chọn"}
                     className="size-full rounded-[inherit] object-cover"
                   />
                   <Button
+                    type="button"
                     onClick={() => removeFile(file.id)}
                     size="icon"
                     className="absolute -top-2 -right-2 size-6 rounded-full border-2 border-background shadow-none focus-visible:border-background"
-                    aria-label="Remove image"
+                    aria-label={`Xóa ảnh ${file.file?.name || ""}`}
+                    title="Xóa ảnh"
                   >
                     <XIcon className="size-3.5" />
                   </Button>
@@ -106,7 +108,7 @@ export const ImageUploader = ({
             </div>
             <p className="mb-1.5 text-sm font-medium">Kéo hình ảnh vào khu vực này để tải lên</p>
             <p className="text-xs text-muted-foreground">
-              SVG, PNG, JPG or GIF (max {maxSizeMB}MB)
+              SVG, PNG, JPG hoặc GIF (tối đa {maxSizeMB}MB)
             </p>
             <Button type="button" variant="outline" className="mt-4" onClick={openFileDialog}>
               <UploadIcon className="-ms-1 opacity-60" aria-hidden="true" />

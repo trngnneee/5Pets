@@ -1,29 +1,26 @@
-"use client"
-
 import { Button } from "@/components/ui/button";
+import { featuredCategoryId } from "@/config/variable";
 import { ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const SectionHeader = () => {
-  const router = useRouter();
-  
   return (
     <>
-      <div className="flex justify-between items-center mb-7">
+      <div className="flex justify-between items-end gap-4 mb-7 flex-wrap">
         <div>
           <div className="font-medium">Có gì mới?</div>
-          <div className="text-[24px] font-bold text-[var(--main-color)] capitalize">một số vật nuôi của chúng tôi</div>
+          <h2 className="text-[24px] font-bold text-[var(--main-color)] capitalize">một số vật nuôi của chúng tôi</h2>
         </div>
 
         <div>
           <Button
-            className="bg-transparent text-[var(--main-color)] hover:bg-[#80808023] border-[1.5px] border-[var(--main-color)] rounded-[57px] py-3 px-7"
-            onClick={() => {
-              router.push('/category/692b001e8b153579ab1b5bf1');
-            }}
+            asChild
+            className="bg-transparent text-[var(--main-color)] hover:bg-[#80808023] border-[1.5px] border-[var(--main-color)] rounded-[57px] py-3 px-7 max-md:h-11"
           >
-            Xem thêm
-            <ChevronRight />
+            <Link href={`/category/${featuredCategoryId}`}>
+              Xem thêm
+              <ChevronRight aria-hidden="true" />
+            </Link>
           </Button>
         </div>
       </div>

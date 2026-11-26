@@ -13,7 +13,6 @@ import {
 import { usePathname } from "next/navigation"
 import React, { useEffect, useState } from "react"
 import { petBreadcrumbs } from "@/lib/clientAPI/breadcrumb"
-import { set } from "date-fns"
 
 export const InfoBreadCrumb = () => {
   const pathname = usePathname();
@@ -22,17 +21,21 @@ export const InfoBreadCrumb = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const promise = await petBreadcrumbs(id);
-      if (promise.code == "success") {
-        setPathName(promise.data);
+      try {
+        const promise = await petBreadcrumbs(id);
+        if (promise.code == "success") {
+          setPathName(promise.data);
+        }
+      } catch {
+        setPathName([]);
       }
     }
     fetchData();
-  }, [])
+  }, [pathname])
 
   return (
     <>
-      <Breadcrumb>
+      <Breadcrumb aria-label="Đường dẫn">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/">
